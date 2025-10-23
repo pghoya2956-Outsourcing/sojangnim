@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디자인 시안 09 - 테이블 뷰</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #fafafa;
+            color: #333;
+        }
+        .header {
+            background: #34495e;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .sidebar {
+            width: 220px;
+            margin-right: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: #34495e;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .sidebar-item {
+            padding: 0.75rem 0;
+            color: #555;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .sidebar-item:hover {
+            color: #3498db;
+        }
+        .content {
+            flex: 1;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .toolbar {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toolbar h2 {
+            color: #34495e;
+            font-size: 1.3rem;
+        }
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .view-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead {
+            background: #f8f9fa;
+        }
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        td {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .product-thumb {
+            width: 60px;
+            height: 60px;
+            background: #ecf0f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        .product-text {
+            flex: 1;
+        }
+        .product-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        .product-code {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        .price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .specs {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        .btn-action {
+            padding: 0.5rem 1rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .btn-action:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">TOOLMART</div>
+        <div class="nav">
+            <a href="#">홈</a>
+            <a href="#">제품목록</a>
+            <a href="#">재고관리</a>
+            <a href="#">주문내역</a>
+            <a href="#">로그인</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>필터</h3>
+            <div class="sidebar-item">전체</div>
+            <div class="sidebar-item">전동공구</div>
+            <div class="sidebar-item">에어공구</div>
+            <div class="sidebar-item">측정기기</div>
+            <div class="sidebar-item">안전장비</div>
+            <div class="sidebar-item">소모품</div>
+        </div>
+
+        <div class="content">
+            <div class="toolbar">
+                <h2>제품 목록</h2>
+                <div class="view-toggle">
+                    <button class="view-btn">그리드</button>
+                    <button class="view-btn active">테이블</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>제품</th>
+                        <th>사양</th>
+                        <th>가격</th>
+                        <th>재고</th>
+                        <th>액션</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb">🔨</div>
+                                <div class="product-text">
+                                    <div class="product-name">충전 임팩트 드라이버</div>
+                                    <div class="product-code">모델: IPD-2000X</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="specs">
+                                20V / 180Nm<br>
+                                5.0Ah 배터리 포함
+                            </div>
+                        </td>
+                        <td><div class="price">298,000원</div></td>
+                        <td><span class="badge badge-success">재고 충분</span></td>
+                        <td><button class="btn-action">주문</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb">⚙️</div>
+                                <div class="product-text">
+                                    <div class="product-name">앵글 그라인더</div>
+                                    <div class="product-code">모델: AG-125HD</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="specs">
+                                2200W / 125mm<br>
+                                11,000rpm
+                            </div>
+                        </td>
+                        <td><div class="price">185,000원</div></td>
+                        <td><span class="badge badge-success">재고 충분</span></td>
+                        <td><button class="btn-action">주문</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb">📐</div>
+                                <div class="product-text">
+                                    <div class="product-name">레이저 거리측정기</div>
+                                    <div class="product-code">모델: LDM-100P</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="specs">
+                                100m / ±1.5mm<br>
+                                IP54 방수
+                            </div>
+                        </td>
+                        <td><div class="price">165,000원</div></td>
+                        <td><span class="badge badge-warning">재고 부족</span></td>
+                        <td><button class="btn-action">주문</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb">🔩</div>
+                                <div class="product-text">
+                                    <div class="product-name">에어 임팩트 렌치</div>
+                                    <div class="product-code">모델: AIW-1600</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="specs">
+                                6.2bar / 1600Nm<br>
+                                1/2" 드라이브
+                            </div>
+                        </td>
+                        <td><div class="price">355,000원</div></td>
+                        <td><span class="badge badge-success">재고 충분</span></td>
+                        <td><button class="btn-action">주문</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb">🔌</div>
+                                <div class="product-text">
+                                    <div class="product-name">인버터 용접기</div>
+                                    <div class="product-code">모델: IW-200A</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="specs">
+                                200A 출력<br>
+                                IGBT 인버터
+                            </div>
+                        </td>
+                        <td><div class="price">520,000원</div></td>
+                        <td><span class="badge badge-success">재고 충분</span></td>
+                        <td><button class="btn-action">주문</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb">🛡️</div>
+                                <div class="product-text">
+                                    <div class="product-name">산업용 안전화</div>
+                                    <div class="product-code">모델: SB-S3-ESD</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="specs">
+                                Steel Toe<br>
+                                S3 / ESD 적용
+                            </div>
+                        </td>
+                        <td><div class="price">89,000원</div></td>
+                        <td><span class="badge badge-success">재고 충분</span></td>
+                        <td><button class="btn-action">주문</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

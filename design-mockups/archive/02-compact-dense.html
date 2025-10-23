@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디자인 시안 05 - 컴팩트 덴스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #e8e8e8;
+            color: #222;
+        }
+        .header {
+            background: #2a2a2a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ff8800;
+        }
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ff8800;
+        }
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .sidebar {
+            width: 200px;
+            margin-right: 1.5rem;
+            background: #fff;
+            padding: 1rem;
+            height: fit-content;
+            border: 1px solid #ccc;
+        }
+        .sidebar h3 {
+            margin-bottom: 0.75rem;
+            color: #222;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ff8800;
+        }
+        .sidebar-item {
+            padding: 0.5rem 0.5rem;
+            color: #444;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border-left: 3px solid transparent;
+            margin-bottom: 0.25rem;
+        }
+        .sidebar-item:hover {
+            background: #f5f5f5;
+            border-left-color: #ff8800;
+        }
+        .product-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .product-card {
+            background: #fff;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            border-color: #ff8800;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            border-bottom: 1px solid #ccc;
+        }
+        .product-info {
+            padding: 1rem;
+        }
+        .product-code {
+            font-size: 0.7rem;
+            color: #888;
+            margin-bottom: 0.25rem;
+            font-family: monospace;
+        }
+        .product-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        .product-specs {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.75rem;
+            border-top: 1px solid #eee;
+        }
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ff8800;
+        }
+        .stock-badge {
+            font-size: 0.7rem;
+            background: #27ae60;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">TOOLS DIRECT</div>
+        <div class="nav">
+            <a href="#">홈</a>
+            <a href="#">카탈로그</a>
+            <a href="#">특가</a>
+            <a href="#">고객지원</a>
+            <a href="#">로그인</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>카테고리</h3>
+            <div class="sidebar-item">전체 보기</div>
+            <div class="sidebar-item">전동공구</div>
+            <div class="sidebar-item">에어공구</div>
+            <div class="sidebar-item">측정기</div>
+            <div class="sidebar-item">용접장비</div>
+            <div class="sidebar-item">안전용품</div>
+            <div class="sidebar-item">소모품</div>
+        </div>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-image">🔨</div>
+                <div class="product-info">
+                    <div class="product-code">IPD-2000X</div>
+                    <div class="product-name">충전 임팩트 드라이버</div>
+                    <div class="product-specs">20V / 180Nm / 5.0Ah<br>브러시리스 모터</div>
+                    <div class="product-footer">
+                        <div class="product-price">298,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">⚙️</div>
+                <div class="product-info">
+                    <div class="product-code">AG-125HD</div>
+                    <div class="product-name">앵글 그라인더</div>
+                    <div class="product-specs">2200W / 125mm<br>11,000rpm</div>
+                    <div class="product-footer">
+                        <div class="product-price">185,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">📐</div>
+                <div class="product-info">
+                    <div class="product-code">LDM-100P</div>
+                    <div class="product-name">레이저 거리측정기</div>
+                    <div class="product-specs">100m / ±1.5mm<br>IP54 방수</div>
+                    <div class="product-footer">
+                        <div class="product-price">165,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔩</div>
+                <div class="product-info">
+                    <div class="product-code">AIW-1600</div>
+                    <div class="product-name">에어 임팩트 렌치</div>
+                    <div class="product-specs">1600Nm / 6.2bar<br>1/2" 드라이브</div>
+                    <div class="product-footer">
+                        <div class="product-price">355,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔌</div>
+                <div class="product-info">
+                    <div class="product-code">IW-200A</div>
+                    <div class="product-name">인버터 용접기</div>
+                    <div class="product-specs">200A / IGBT<br>TIG/MMA 겸용</div>
+                    <div class="product-footer">
+                        <div class="product-price">520,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🛡️</div>
+                <div class="product-info">
+                    <div class="product-code">SB-S3-ESD</div>
+                    <div class="product-name">산업용 안전화</div>
+                    <div class="product-specs">Steel Toe / S3<br>ESD 적용</div>
+                    <div class="product-footer">
+                        <div class="product-price">89,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔧</div>
+                <div class="product-info">
+                    <div class="product-code">TW-20-200</div>
+                    <div class="product-name">토크렌치 세트</div>
+                    <div class="product-specs">20-200Nm<br>정밀 교정</div>
+                    <div class="product-footer">
+                        <div class="product-price">185,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">⚡</div>
+                <div class="product-info">
+                    <div class="product-code">CD-18V-PRO</div>
+                    <div class="product-name">충전 드릴 세트</div>
+                    <div class="product-specs">18V / 65Nm<br>13mm 척</div>
+                    <div class="product-footer">
+                        <div class="product-price">225,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🥽</div>
+                <div class="product-info">
+                    <div class="product-code">SG-UV-AF</div>
+                    <div class="product-name">안전 고글</div>
+                    <div class="product-specs">UV 차단 / 김서림방지<br>충격 보호</div>
+                    <div class="product-footer">
+                        <div class="product-price">35,000원</div>
+                        <div class="stock-badge">재고</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
