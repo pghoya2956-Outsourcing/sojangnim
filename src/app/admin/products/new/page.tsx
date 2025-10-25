@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createProduct } from './actions'
 import { supabase } from '@/lib/supabase/client'
+import ImageUpload from '@/components/admin/ImageUpload'
 
 export default function NewProductPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState<any[]>([])
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>([
     { key: '', value: '' },
   ])
@@ -160,19 +162,13 @@ export default function NewProductPage() {
           </select>
         </div>
 
-        {/* 이미지 URL */}
-        <div>
-          <label htmlFor="image_url" className="block text-sm font-semibold text-[#1a1a1a] mb-2">
-            이미지 URL
-          </label>
-          <input
-            type="text"
-            id="image_url"
-            name="image_url"
-            className="w-full px-4 py-3 border border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1a1a1a] text-[#1a1a1a]"
-            placeholder="/images/products/example.jpg"
-          />
-        </div>
+        {/* 이미지 업로드 */}
+        <ImageUpload
+          currentImageUrl={imageUrl}
+          onImageUrlChange={setImageUrl}
+          disabled={loading}
+        />
+        <input type="hidden" name="image_url" value={imageUrl || ''} />
 
         {/* 제품 사양 */}
         <div>

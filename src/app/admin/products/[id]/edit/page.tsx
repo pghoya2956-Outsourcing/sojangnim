@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { updateProduct } from './actions'
 import { supabase } from '@/lib/supabase/client'
+import ImageUpload from '@/components/admin/ImageUpload'
+import { deleteProductImage } from '@/lib/supabase/storage'
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -13,6 +15,8 @@ export default function EditProductPage() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [categories, setCategories] = useState<any[]>([])
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [previousImageUrl, setPreviousImageUrl] = useState<string | null>(null)
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>([
     { key: '', value: '' },
   ])
@@ -24,7 +28,6 @@ export default function EditProductPage() {
     price: '',
     category_id: '',
     badge: '',
-    image_url: '',
   })
 
   // 제품 데이터 및 카테고리 로드
@@ -50,8 +53,11 @@ export default function EditProductPage() {
         price: product.price?.toString() || '',
         category_id: product.category_id || '',
         badge: product.badge || '',
-        image_url: product.image_url || '',
       })
+
+      // 이미지 URL 설정
+      setImageUrl(product.image_url || null)
+      setPreviousImageUrl(product.image_url || null)
 
       // Specs 설정
       if (product.specs && typeof product.specs === 'object') {
@@ -93,6 +99,11 @@ export default function EditProductPage() {
     setLoading(true)
 
     try {
+      // 이미지가 변경되었으면 기존 이미지 삭제
+      if (previousImageUrl && previousImageUrl !== imageUrl && imageUrl !== null) {
+        await deleteProductImage(previousImageUrl)
+      }
+
       const formData = new FormData(e.currentTarget)
 
       // Specs를 JSON 객체로 변환
@@ -227,21 +238,13 @@ export default function EditProductPage() {
           </select>
         </div>
 
-        {/* 이미지 URL */}
-        <div>
-          <label htmlFor="image_url" className="block text-sm font-semibold text-[#1a1a1a] mb-2">
-            이미지 URL
-          </label>
-          <input
-            type="text"
-            id="image_url"
-            name="image_url"
-            value={formData.image_url}
-            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-            className="w-full px-4 py-3 border border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1a1a1a] text-[#1a1a1a]"
-            placeholder="/images/products/example.jpg"
-          />
-        </div>
+        {/* 이미지 업로드 */}
+        <ImageUpload
+          currentImageUrl={imageUrl}
+          onImageUrlChange={setImageUrl}
+          disabled={loading}
+        />
+        <input type="hidden" name="image_url" value={imageUrl || ''} />
 
         {/* 제품 사양 */}
         <div>
