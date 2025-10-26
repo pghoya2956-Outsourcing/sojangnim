@@ -1,3 +1,8 @@
+-- Admin 사용자 데이터
+INSERT INTO admin_users (email) VALUES
+    ('admin@example.com')
+ON CONFLICT (email) DO NOTHING;
+
 -- 카테고리 데이터
 INSERT INTO categories (name, slug) VALUES
     ('전동공구', 'power-tools'),

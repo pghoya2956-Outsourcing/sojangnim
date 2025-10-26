@@ -3,7 +3,7 @@
  * 제품 이미지 업로드/삭제/검증
  */
 
-import { supabase } from './client'
+import { createBrowserClient } from '@supabase/ssr'
 
 /**
  * 이미지 파일 유효성 검사
@@ -64,6 +64,12 @@ export async function uploadProductImage(file: File): Promise<string> {
     throw new Error(validation.error)
   }
 
+  // 브라우저 클라이언트 생성 (쿠키에서 세션 자동 가져옴)
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
   // 고유 파일명 생성 (timestamp-filename)
   const timestamp = Date.now()
   const sanitizedName = file.name.replace(/\s/g, '-').replace(/[^a-zA-Z0-9.-]/g, '')
@@ -99,6 +105,12 @@ export async function deleteProductImage(imageUrl: string): Promise<void> {
   if (!imageUrl) return
 
   try {
+    // 브라우저 클라이언트 생성
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
     // URL에서 파일명 추출
     const fileName = extractFileName(imageUrl)
     if (!fileName) {
