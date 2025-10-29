@@ -34,19 +34,11 @@ jobs:
         with:
           version: latest
 
-      - name: Start Supabase local
-        run: |
-          supabase start
-          supabase status
+      - name: Start Supabase and verify setup
+        run: ./scripts/ci-setup-supabase.sh
 
-      - name: Wait for Supabase to be ready
-        run: |
-          timeout 60 bash -c 'until curl -f http://localhost:54321/rest/v1/ -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0" > /dev/null 2>&1; do sleep 1; done'
-
-      - name: Verify database data
-        run: |
-          echo "Checking database for test data..."
-          supabase db diff --schema public
+      - name: Create admin user for tests
+        run: ./scripts/ci-create-admin.sh
 
       - name: Run Playwright tests
         run: npm run test:e2e
