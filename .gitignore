@@ -39,6 +39,12 @@ next-env.d.ts
 .branches
 .temp
 .sql
+supabase/supabase.sample/
+
+# docker
+supabase/docker/.env
+supabase/docker/volumes/
+supabase/docker/.DS_Store
 
 # playwright mcp cache
 .playwright-mcp/
