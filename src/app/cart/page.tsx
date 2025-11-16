@@ -211,6 +211,7 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* 수신자 입력 모달 */}
       <RecipientModal
