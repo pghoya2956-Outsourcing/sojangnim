@@ -3,9 +3,17 @@
 import { useCartStore } from '@/store/cartStore'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import RecipientModal from '@/components/quotation/RecipientModal'
+import QuotationTemplate from '@/components/quotation/QuotationTemplate'
+import { generateQuotationData } from '@/lib/quotation/generator'
+import type { QuotationData } from '@/types/quotation'
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [quotationData, setQuotationData] = useState<QuotationData | null>(null)
+  const [isPrinting, setIsPrinting] = useState(false)
+
   const items = useCartStore((state) => state.items)
   const updateQuantity = useCartStore((state) => state.updateQuantity)
   const removeItem = useCartStore((state) => state.removeItem)
@@ -16,8 +24,30 @@ export default function CartPage() {
     setMounted(true)
   }, [])
 
-  const handlePrint = () => {
-    window.print()
+  const handlePrintClick = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleRecipientSubmit = (recipientName: string) => {
+    // 1. QuotationData 생성
+    const data = generateQuotationData(items, recipientName)
+    setQuotationData(data)
+
+    // 2. 모달 닫기
+    setIsModalOpen(false)
+
+    // 3. 인쇄 상태 활성화 (템플릿 렌더링을 위해)
+    setIsPrinting(true)
+
+    // 4. 약간의 지연 후 인쇄 대화상자 열기 (렌더링 완료 대기)
+    setTimeout(() => {
+      window.print()
+
+      // 5. 인쇄 후 원래 상태로 복원
+      setTimeout(() => {
+        setIsPrinting(false)
+      }, 100)
+    }, 100)
   }
 
   if (!mounted) {
@@ -48,16 +78,18 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 flex items-center justify-between print:hidden">
-        <h1 className="text-3xl font-bold text-gray-900">장바구니</h1>
-        <button
-          onClick={clearCart}
-          className="text-red-600 hover:text-red-700 font-medium text-sm"
-        >
-          전체 삭제
-        </button>
-      </div>
+    <>
+      {/* 화면용 UI */}
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${isPrinting ? 'hidden' : ''}`}>
+        <div className="mb-8 flex items-center justify-between print:hidden">
+          <h1 className="text-3xl font-bold text-gray-900">장바구니</h1>
+          <button
+            onClick={clearCart}
+            className="text-red-600 hover:text-red-700 font-medium text-sm"
+          >
+            전체 삭제
+          </button>
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
@@ -164,7 +196,7 @@ export default function CartPage() {
 
             <div className="space-y-3">
               <button
-                onClick={handlePrint}
+                onClick={handlePrintClick}
                 className="w-full bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
               >
                 견적서 출력
@@ -180,22 +212,71 @@ export default function CartPage() {
         </div>
       </div>
 
+      {/* 수신자 입력 모달 */}
+      <RecipientModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleRecipientSubmit}
+      />
+
+      {/* 인쇄 전용 템플릿 */}
+      {isPrinting && quotationData && (
+        <div className="print-only">
+          <QuotationTemplate data={quotationData} />
+        </div>
+      )}
+
       {/* Print Styles */}
       <style jsx global>{`
         @media print {
+          /* 화면용 요소 숨김 */
           header, footer, .print\\:hidden {
             display: none !important;
           }
 
-          body {
-            background: white !important;
+          /* A4 용지 설정 */
+          @page {
+            size: A4;
+            margin: 15mm;
           }
 
+          body {
+            background: white !important;
+            margin: 0;
+            padding: 0;
+          }
+
+          /* 인쇄 전용 템플릿만 표시 */
+          .print-only {
+            display: block !important;
+          }
+
+          /* 페이지 나눔 방지 */
+          .quotation-template {
+            page-break-inside: avoid;
+          }
+
+          table {
+            page-break-inside: auto;
+          }
+
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+        }
+
+        /* 화면에서는 인쇄 전용 템플릿 숨김 */
+        .print-only {
+          display: none;
+        }
+
+        @media print {
           .print\\:block {
             display: block !important;
           }
         }
       `}</style>
-    </div>
+    </>
   )
 }

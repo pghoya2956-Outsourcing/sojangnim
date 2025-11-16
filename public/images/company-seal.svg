@@ -1,0 +1,13 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 원 -->
+  <circle cx="60" cy="60" r="58" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+
+  <!-- 내부 원 -->
+  <circle cx="60" cy="60" r="50" fill="none" stroke="#991b1b" stroke-width="1.5"/>
+
+  <!-- 회사명 텍스트 -->
+  <text x="60" y="50" font-family="'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">소장님</text>
+
+  <!-- 인 -->
+  <text x="60" y="75" font-family="'Malgun Gothic', sans-serif" font-size="16" fill="white" text-anchor="middle">(인)</text>
+</svg>
