@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>견적서 - 프리뷰 (구현 후 예상 결과)</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #000;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .quotation-template {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 15mm;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* 헤더 */
+    .quotation-header {
+      margin-bottom: 30px;
+    }
+
+    .quotation-header h1 {
+      font-size: 32pt;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 8px;
+    }
+
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 30px;
+    }
+
+    /* 좌측: 수신자 및 메타 정보 */
+    .recipient-section {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    /* 공급자 정보 박스 (우측) */
+    .company-box {
+      border: 2px solid #000;
+      padding: 12px;
+      width: 340px;
+      position: relative;
+    }
+
+    .company-box table {
+      width: 100%;
+      font-size: 10pt;
+    }
+
+    .company-box td {
+      padding: 4px 0;
+      border-bottom: 1px solid #999;
+    }
+
+    .company-box td:first-child {
+      font-weight: 600;
+      width: 110px;
+      padding-right: 10px;
+    }
+
+    .company-box tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* 도장 이미지 */
+    .company-seal {
+      text-align: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+    }
+
+    .company-seal img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    .company-seal .placeholder {
+      width: 80px;
+      height: 80px;
+      border: 2px dashed #ccc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-size: 9pt;
+      color: #999;
+    }
+
+    /* 수신자 */
+    .recipient {
+      margin-bottom: 16px;
+    }
+
+    .recipient-name {
+      display: inline-block;
+      font-size: 16pt;
+      font-weight: bold;
+      padding-bottom: 2px;
+    }
+
+    .recipient-suffix {
+      font-size: 16pt;
+      margin-left: 8px;
+    }
+
+    /* 메타 정보 (좌측) */
+    .meta-info {
+      font-size: 11pt;
+      margin-top: 20px;
+    }
+
+    .meta-info div {
+      margin-bottom: 8px;
+    }
+
+    .meta-info .label {
+      font-weight: 600;
+      display: inline-block;
+      width: 100px;
+    }
+
+    /* 품목 테이블 */
+    .quotation-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid #000;
+      margin-bottom: 20px;
+    }
+
+    .quotation-table th {
+      background-color: #e8e8e8;
+      border: 1px solid #666;
+      padding: 10px 6px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 10pt;
+    }
+
+    .quotation-table td {
+      border: 1px solid #666;
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 10pt;
+    }
+
+    .quotation-table td.text-left {
+      text-align: left;
+    }
+
+    .quotation-table td.text-right {
+      text-align: right;
+      padding-right: 10px;
+    }
+
+    .quotation-table td.spec {
+      color: #555;
+      font-size: 9pt;
+    }
+
+    .quotation-table .total-row {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+
+    .quotation-table .total-row td {
+      padding: 12px 6px;
+    }
+
+    /* 총 합계 박스 */
+    .summary-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .summary-box {
+      border: 2px solid #000;
+      padding: 12px;
+      width: 320px;
+    }
+
+    .summary-box table {
+      width: 100%;
+    }
+
+    .summary-box td {
+      padding: 8px 0;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .summary-box td:first-child {
+      font-weight: 600;
+      width: 140px;
+    }
+
+    .summary-box td:last-child {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .summary-box tr:last-child td {
+      border-bottom: none;
+      padding-top: 12px;
+      font-size: 13pt;
+    }
+
+    /* 하단 문구 */
+    .footer-text {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 11pt;
+    }
+
+    .footer-text p {
+      margin-bottom: 20px;
+    }
+
+    .company-name {
+      font-weight: bold;
+      font-size: 12pt;
+    }
+
+    /* 인쇄용 */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .quotation-template {
+        box-shadow: none;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quotation-template">
+    <!-- 헤더 -->
+    <div class="quotation-header">
+      <h1>견 적 서</h1>
+
+      <div class="header-info">
+        <!-- 좌측: 수신자 및 메타 정보 -->
+        <div class="recipient-section">
+          <!-- 수신자 -->
+          <div class="recipient">
+            <span class="recipient-name">경기과학기술대학교</span>
+            <span class="recipient-suffix">귀중</span>
+          </div>
+
+          <!-- 메타 정보 -->
+          <div class="meta-info">
+            <div>
+              <span class="label">견적서 번호:</span>
+              <span>20250117-143025</span>
+            </div>
+            <div>
+              <span class="label">작성일자:</span>
+              <span>2025-01-17</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 우측: 공급자 정보 박스 -->
+        <div class="company-box">
+          <table>
+            <tr>
+              <td>사업자등록번호</td>
+              <td>123-45-67890</td>
+            </tr>
+            <tr>
+              <td>상호</td>
+              <td>소장님</td>
+            </tr>
+            <tr>
+              <td>대표자명</td>
+              <td>홍길동</td>
+            </tr>
+            <tr>
+              <td>사업장 주소</td>
+              <td>서울특별시 강남구 테헤란로 123</td>
+            </tr>
+            <tr>
+              <td>업태</td>
+              <td>도소매</td>
+            </tr>
+            <tr>
+              <td>종목</td>
+              <td>공구</td>
+            </tr>
+          </table>
+
+          <!-- 도장 이미지 -->
+          <div class="company-seal">
+            <!-- 실제 구현 시: <img src="/images/company-seal.png" alt="회사 도장" /> -->
+            <div class="placeholder">도장</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 품목 테이블 -->
+    <table class="quotation-table">
+      <thead>
+        <tr>
+          <th style="width: 50px;">순번</th>
+          <th style="width: 200px;">품목명</th>
+          <th style="width: 220px;">규격</th>
+          <th style="width: 60px;">수량</th>
+          <th style="width: 100px;">단가</th>
+          <th style="width: 110px;">공급가액</th>
+          <th style="width: 90px;">세액</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td class="text-left">무선 드릴 세트</td>
+          <td class="text-left spec">20V 리튬이온 배터리, 토크 180Nm</td>
+          <td>2</td>
+          <td class="text-right">150,000</td>
+          <td class="text-right">300,000</td>
+          <td class="text-right">30,000</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td class="text-left">전동 톱</td>
+          <td class="text-left spec">7인치 원형 톱, 1800W</td>
+          <td>1</td>
+          <td class="text-right">220,000</td>
+          <td class="text-right">220,000</td>
+          <td class="text-right">22,000</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td class="text-left">각도 그라인더</td>
+          <td class="text-left spec">4.5인치, 1200W 고성능 모터</td>
+          <td>3</td>
+          <td class="text-right">85,000</td>
+          <td class="text-right">255,000</td>
+          <td class="text-right">25,500</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td class="text-left">임팩트 렌치</td>
+          <td class="text-left spec">1/2인치, 최대 토크 450Nm</td>
+          <td>1</td>
+          <td class="text-right">195,000</td>
+          <td class="text-right">195,000</td>
+          <td class="text-right">19,500</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td class="text-left">레이저 레벨기</td>
+          <td class="text-left spec">360도 회전, 자동 수평 조정</td>
+          <td>1</td>
+          <td class="text-right">380,000</td>
+          <td class="text-right">380,000</td>
+          <td class="text-right">38,000</td>
+        </tr>
+        <!-- 빈 행 (최소 10줄 유지) -->
+        <tr>
+          <td>&nbsp;</td>
+          <td class="text-left">&nbsp;</td>
+          <td class="text-left spec">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td class="text-left">&nbsp;</td>
+          <td class="text-left spec">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td class="text-left">&nbsp;</td>
+          <td class="text-left spec">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td class="text-left">&nbsp;</td>
+          <td class="text-left spec">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td class="text-left">&nbsp;</td>
+          <td class="text-left spec">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+          <td class="text-right">&nbsp;</td>
+        </tr>
+        <!-- 합계 행 -->
+        <tr class="total-row">
+          <td colspan="5" class="text-right">합계</td>
+          <td class="text-right">1,350,000</td>
+          <td class="text-right">135,000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 총 합계 박스 -->
+    <div class="summary-section">
+      <div class="summary-box">
+        <table>
+          <tr>
+            <td>공급가액</td>
+            <td>1,350,000원</td>
+          </tr>
+          <tr>
+            <td>부가세 (10%)</td>
+            <td>135,000원</td>
+          </tr>
+          <tr>
+            <td>총 합계</td>
+            <td style="font-size: 15pt; color: #000;">1,485,000원</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 하단 문구 -->
+    <div class="footer-text">
+      <p>위와 같이 견적합니다.</p>
+      <p class="company-name">소장님</p>
+    </div>
+  </div>
+
+  <!-- 안내 문구 (인쇄 시 숨김) -->
+  <div style="text-align: center; margin-top: 20px; color: #666; font-size: 10pt;">
+    <p>✨ 이것은 Phase 8 구현 후 예상되는 견적서 출력 결과입니다.</p>
+    <p>실제 구현 시 장바구니 아이템이 동적으로 표시됩니다.</p>
+    <p>현재 수신자: "경기과학기술대학교 <strong>귀중</strong>" (공공기관)</p>
+    <p>Phase 9-2에서 개인 선택 시: "홍길동 <strong>귀하</strong>"로 자동 변경됩니다.</p>
+  </div>
+</body>
+</html>
