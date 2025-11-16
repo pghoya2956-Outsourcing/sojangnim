@@ -1,13 +1,48 @@
-<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- 배경 원 -->
-  <circle cx="60" cy="60" r="58" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- 그라데이션 정의 -->
+  <defs>
+    <radialGradient id="sealGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#b91c1c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#991b1b;stop-opacity:1" />
+    </radialGradient>
 
-  <!-- 내부 원 -->
-  <circle cx="60" cy="60" r="50" fill="none" stroke="#991b1b" stroke-width="1.5"/>
+    <!-- 텍스처를 위한 필터 -->
+    <filter id="texture">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" in2="noise" mode="multiply"/>
+    </filter>
+  </defs>
 
-  <!-- 회사명 텍스트 -->
-  <text x="60" y="50" font-family="'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">소장님</text>
+  <!-- 배경 원 (그림자 효과) -->
+  <circle cx="80" cy="85" r="72" fill="rgba(0,0,0,0.15)"/>
 
-  <!-- 인 -->
-  <text x="60" y="75" font-family="'Malgun Gothic', sans-serif" font-size="16" fill="white" text-anchor="middle">(인)</text>
+  <!-- 메인 도장 원 -->
+  <circle cx="80" cy="80" r="72" fill="url(#sealGradient)" filter="url(#texture)"/>
+
+  <!-- 내부 장식 원들 -->
+  <circle cx="80" cy="80" r="68" fill="none" stroke="#7f1d1d" stroke-width="1"/>
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#7f1d1d" stroke-width="2"/>
+  <circle cx="80" cy="80" r="56" fill="none" stroke="#991b1b" stroke-width="0.5"/>
+
+  <!-- 회사명 텍스트 (상단) -->
+  <text x="80" y="65"
+        font-family="'Noto Serif KR', 'Malgun Gothic', serif"
+        font-size="24"
+        font-weight="900"
+        fill="white"
+        text-anchor="middle"
+        letter-spacing="2">소장님</text>
+
+  <!-- 인 텍스트 (하단) -->
+  <text x="80" y="100"
+        font-family="'Noto Serif KR', 'Malgun Gothic', serif"
+        font-size="20"
+        font-weight="700"
+        fill="white"
+        text-anchor="middle">(인)</text>
+
+  <!-- 추가 장식 선 -->
+  <line x1="50" y1="80" x2="110" y2="80" stroke="#7f1d1d" stroke-width="0.5" opacity="0.5"/>
 </svg>

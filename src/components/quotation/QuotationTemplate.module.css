@@ -1,0 +1,207 @@
+/* 견적서 템플릿 스타일 */
+.quotation {
+  background: white;
+  padding: 15mm;
+  min-height: 297mm;
+  width: 210mm;
+  margin: 0 auto;
+  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+  color: #000;
+}
+
+/* 헤더 */
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 32pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  letter-spacing: 8px;
+}
+
+.headerInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+/* 수신자 섹션 */
+.recipientSection {
+  flex: 1;
+  padding-right: 1.25rem;
+}
+
+.recipient {
+  margin-bottom: 1rem;
+}
+
+.recipientName {
+  font-size: 16pt;
+  font-weight: bold;
+}
+
+.recipientSuffix {
+  font-size: 16pt;
+  margin-left: 0.5rem;
+}
+
+.metadata {
+  font-size: 11pt;
+  margin-top: 1.25rem;
+}
+
+.metadataRow {
+  margin-bottom: 0.5rem;
+}
+
+.metadataLabel {
+  font-weight: 600;
+  display: inline-block;
+  width: 100px;
+}
+
+/* 공급자 정보 박스 */
+.companyBox {
+  border: 2px solid #000;
+  padding: 0.75rem;
+  width: 340px;
+}
+
+.companyTable {
+  width: 100%;
+  font-size: 10pt;
+}
+
+.companyTable td {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #999;
+}
+
+.companyTable td:first-child {
+  font-weight: 600;
+  width: 110px;
+  padding-right: 0.625rem;
+}
+
+.companyTable tr:last-child td {
+  border-bottom: none;
+}
+
+.companySeal {
+  text-align: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #ddd;
+}
+
+/* 품목 테이블 */
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #000;
+  margin-bottom: 1.25rem;
+}
+
+.itemsTable th {
+  background-color: #e8e8e8;
+  border: 1px solid #666;
+  padding: 0.625rem 0.375rem;
+  font-weight: bold;
+  text-align: center;
+  font-size: 10pt;
+}
+
+.itemsTable td {
+  border: 1px solid #666;
+  padding: 0.5rem 0.375rem;
+  text-align: center;
+  font-size: 10pt;
+}
+
+.itemsTable .textLeft {
+  text-align: left;
+}
+
+.itemsTable .textRight {
+  text-align: right;
+  padding-right: 0.625rem;
+}
+
+.itemsTable .spec {
+  color: #555;
+  font-size: 9pt;
+}
+
+.totalRow {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.totalRow td {
+  padding: 0.75rem 0.375rem;
+}
+
+/* 합계 박스 */
+.summarySection {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2.5rem;
+}
+
+.summaryBox {
+  border: 2px solid #000;
+  padding: 0.75rem;
+  width: 320px;
+}
+
+.summaryTable {
+  width: 100%;
+}
+
+.summaryTable td {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.summaryTable td:first-child {
+  font-weight: 600;
+  width: 140px;
+}
+
+.summaryTable td:last-child {
+  text-align: right;
+  font-weight: bold;
+}
+
+.summaryTable tr:last-child td {
+  border-bottom: none;
+  padding-top: 0.75rem;
+  font-size: 13pt;
+}
+
+.grandTotal {
+  font-size: 15pt;
+  color: #000;
+}
+
+/* 하단 문구 */
+.footer {
+  text-align: center;
+  margin-top: 3.75rem;
+  font-size: 11pt;
+}
+
+.footerText {
+  margin-bottom: 1.25rem;
+}
+
+.companyName {
+  font-weight: bold;
+  font-size: 12pt;
+}
