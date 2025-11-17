@@ -292,5 +292,5 @@ services:
 
 networks:
   default:
-    name: supabase
-    driver: bridge
+    name: sojangnim
+    external: true
