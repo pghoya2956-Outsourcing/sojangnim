@@ -290,12 +290,6 @@ services:
       INBUCKET_SMTP_ADDR: 0.0.0.0:2500
       INBUCKET_POP3_ADDR: 0.0.0.0:1100
 
-volumes:
-  db:
-    driver: local
-  storage:
-    driver: local
-
 networks:
   default:
     name: supabase
