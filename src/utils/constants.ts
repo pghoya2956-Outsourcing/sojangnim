@@ -2,6 +2,8 @@
  * 애플리케이션 전역 상수
  */
 
+import { storageConfig } from '@/lib/config'
+
 /**
  * 배지 타입별 Tailwind CSS 클래스
  */
@@ -39,7 +41,7 @@ export const COLORS = {
  * localStorage 키
  */
 export const STORAGE_KEYS = {
-  cart: 'sojangnim-cart',
+  cart: storageConfig.cartKey,
 } as const;
 
 /**

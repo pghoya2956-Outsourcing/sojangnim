@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { storageConfig } from '@/lib/config'
 import type { Product } from '@/types/product'
 
 export interface CartItem {
@@ -79,7 +80,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'sojangnim-cart',
+      name: storageConfig.cartKey,
     }
   )
 )

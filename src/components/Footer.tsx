@@ -1,3 +1,5 @@
+import { companyConfig } from '@/lib/config'
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300 mt-auto">
@@ -5,9 +7,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-lg font-bold mb-4">소장님</h3>
+            <h3 className="text-white text-lg font-bold mb-4">{companyConfig.name}</h3>
             <p className="text-sm text-gray-400">
-              전문 공구 및 산업용품 카탈로그
+              {companyConfig.footerTagline}
             </p>
           </div>
 
@@ -32,7 +34,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white text-lg font-bold mb-4">고객지원</h3>
             <ul className="space-y-2 text-sm">
-              <li className="text-gray-400">견적서 출력용 카탈로그 사이트</li>
+              <li className="text-gray-400">{companyConfig.footerSupportText}</li>
               <li className="text-gray-400">제품 문의 환영합니다</li>
             </ul>
           </div>
@@ -40,7 +42,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
-          <p>&copy; {new Date().getFullYear()} 소장님. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {companyConfig.name}. All rights reserved.</p>
         </div>
       </div>
     </footer>

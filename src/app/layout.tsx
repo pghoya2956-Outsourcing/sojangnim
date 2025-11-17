@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { brandConfig } from '@/lib/config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '소장님 - 제품 카탈로그',
-  description: '견적서 출력용 제품 카탈로그 사이트',
+  title: brandConfig.siteTitle,
+  description: brandConfig.siteDescription,
 }
 
 export default function RootLayout({

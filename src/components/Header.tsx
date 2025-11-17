@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { brandConfig } from '@/lib/config'
 import CartBadge from './CartBadge'
 
 export default function Header() {
@@ -8,7 +9,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <Link href="/products" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-[#1a1a1a]">TOOLBOX PRO</span>
+            <span className="text-2xl font-bold text-[#1a1a1a]">{brandConfig.name}</span>
           </Link>
 
           {/* Navigation */}
