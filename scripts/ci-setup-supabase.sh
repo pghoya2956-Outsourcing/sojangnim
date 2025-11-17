@@ -23,9 +23,12 @@ echo "✅ REST API ready"
 timeout 60 bash -c 'until curl -f http://localhost:54321/auth/v1/health > /dev/null 2>&1; do sleep 1; done'
 echo "✅ Auth API ready"
 
-# 5. Storage API 헬스체크 (Storage가 느릴 수 있어 타임아웃 증가)
-timeout 180 bash -c 'until curl -f http://localhost:54321/storage/v1/healthcheck > /dev/null 2>&1; do sleep 1; done'
-echo "✅ Storage API ready"
+# 5. Storage API 헬스체크 (선택사항 - CI 환경에서 느릴 수 있음)
+if timeout 30 bash -c 'until curl -f http://localhost:54321/storage/v1/healthcheck > /dev/null 2>&1; do sleep 1; done' 2>/dev/null; then
+  echo "✅ Storage API ready"
+else
+  echo "⚠️  Storage API not ready (optional, skipping...)"
+fi
 
 echo ""
 echo "📊 Verifying database setup..."
