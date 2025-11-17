@@ -34,8 +34,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     <div className="max-w-[1400px] mx-auto px-8 py-8">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-[#666]">
-        <Link href="/" className="hover:text-[#1a1a1a]">홈</Link>
-        <span className="mx-2">/</span>
         <Link href="/products" className="hover:text-[#1a1a1a]">제품</Link>
         {typedProduct.category && (
           <>

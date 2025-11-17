@@ -7,29 +7,17 @@ export default function Header() {
       <div className="max-w-[1400px] mx-auto px-8 md:px-12">
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/products" className="flex items-center space-x-2">
             <span className="text-2xl font-bold text-[#1a1a1a]">TOOLBOX PRO</span>
           </Link>
 
           {/* Navigation */}
           <nav className="flex items-center gap-8">
             <Link
-              href="/"
-              className="text-[#555] hover:text-[#1a1a1a] font-medium text-sm transition-colors"
-            >
-              홈
-            </Link>
-            <Link
               href="/products"
               className="text-[#555] hover:text-[#1a1a1a] font-medium text-sm transition-colors"
             >
               제품
-            </Link>
-            <Link
-              href="/cart"
-              className="text-[#555] hover:text-[#1a1a1a] font-medium text-sm transition-colors"
-            >
-              견적
             </Link>
             <Link
               href="/cart"
