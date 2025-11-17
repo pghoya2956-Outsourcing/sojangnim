@@ -13,6 +13,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
+  // 타임아웃 설정 (기본 30초 → 60초)
+  timeout: 60000, // 각 테스트 60초
+  expect: {
+    timeout: 10000, // expect 타임아웃 10초
+  },
+
   // 리포터 설정
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],

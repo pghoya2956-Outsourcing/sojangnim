@@ -52,7 +52,12 @@ export async function clearLocalStorage(page: Page) {
 
 /**
  * 페이지 로딩 완료 대기
+ *
+ * networkidle은 Next.js dev 서버의 HMR/WebSocket으로 인해 타임아웃될 수 있음
+ * domcontentloaded는 DOM이 준비되면 즉시 반환
  */
 export async function waitForPageLoad(page: Page) {
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
+  // 추가로 body가 렌더링될 때까지 대기
+  await page.waitForSelector('body', { state: 'visible' });
 }
