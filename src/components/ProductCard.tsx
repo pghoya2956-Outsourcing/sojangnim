@@ -1,4 +1,8 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
+import { useCartStore } from '@/store/cartStore'
 import type { ProductWithCategory } from '@/types/product'
 
 interface ProductCardProps {
@@ -13,23 +17,49 @@ const BADGE_COLORS = {
 } as const
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [quantity, setQuantity] = useState(1)
+  const addItem = useCartStore((state) => state.addItem)
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value)
+    if (value > 0 && value <= 999) {
+      setQuantity(value)
+    }
+  }
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (quantity < 1) {
+      alert('수량은 1개 이상이어야 합니다.')
+      return
+    }
+
+    addItem(product, quantity)
+
+    // 간단한 알림
+    alert(`${product.name} ${quantity}개가 장바구니에 담겼습니다.`)
+
+    // 수량 초기화
+    setQuantity(1)
+  }
+
   return (
-    <Link
-      href={`/products/${product.id}`}
-      className="block bg-white rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full"
-    >
-      {/* Product Image */}
-      <div className="w-full h-[182px] bg-[#fafafa] flex items-center justify-center text-[3.5rem]">
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          '🔨'
-        )}
-      </div>
+    <div className="bg-white rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-shadow duration-300 flex flex-col h-full">
+      {/* Product Image - 클릭 시 상세 페이지 */}
+      <Link href={`/products/${product.id}`}>
+        <div className="w-full h-[182px] bg-[#fafafa] flex items-center justify-center text-[3.5rem] cursor-pointer hover:opacity-90 transition-opacity">
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            '🔨'
+          )}
+        </div>
+      </Link>
 
       {/* Product Info */}
       <div className="p-4 flex-1 flex flex-col">
@@ -39,9 +69,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        <h3 className="text-[1.05rem] font-bold text-[#1a1a1a] mb-2 leading-tight">
-          {product.name}
-        </h3>
+        {/* Product Name - 클릭 시 상세 페이지 */}
+        <Link href={`/products/${product.id}`}>
+          <h3 className="text-[1.05rem] font-bold text-[#1a1a1a] mb-2 leading-tight hover:text-[#4a4a4a] transition-colors cursor-pointer">
+            {product.name}
+          </h3>
+        </Link>
 
         {product.description && (
           <p className="text-[0.8rem] text-[#666] leading-relaxed mb-3 flex-1">
@@ -61,16 +94,36 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex justify-between items-center pt-3 border-t border-[#f0f0f0] mt-auto">
-          <div className="text-xl font-bold text-[#1a1a1a]">
-            {product.price.toLocaleString('ko-KR')}원
+        {/* Price */}
+        <div className="text-xl font-bold text-[#1a1a1a] mb-3">
+          {product.price.toLocaleString('ko-KR')}원
+        </div>
+
+        {/* Quantity & Cart */}
+        <div className="flex gap-2 items-center pt-3 border-t border-[#f0f0f0] mt-auto">
+          <div className="flex items-center gap-2">
+            <label htmlFor={`quantity-${product.id}`} className="text-sm text-[#666] font-medium">
+              수량:
+            </label>
+            <input
+              type="number"
+              id={`quantity-${product.id}`}
+              value={quantity}
+              onChange={handleQuantityChange}
+              min="1"
+              max="999"
+              className="w-16 px-2 py-1.5 border border-[#e0e0e0] rounded-md text-sm text-center focus:outline-none focus:ring-2 focus:ring-[#1a1a1a] focus:border-transparent"
+            />
           </div>
-          <button className="bg-[#1a1a1a] text-white px-5 py-2.5 rounded-md hover:bg-black transition-colors font-semibold text-[0.8rem]">
-            장바구니
+
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-[#1a1a1a] text-white px-4 py-2 rounded-md hover:bg-black transition-colors font-semibold text-sm"
+          >
+            🛒 담기
           </button>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

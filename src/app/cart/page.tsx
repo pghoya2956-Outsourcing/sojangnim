@@ -238,7 +238,7 @@ export default function CartPage() {
           /* A4 용지 설정 */
           @page {
             size: A4;
-            margin: 15mm;
+            margin: 5mm;
           }
 
           body {
