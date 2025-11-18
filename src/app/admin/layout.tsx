@@ -1,27 +1,18 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { requireAdmin, createClient } from '@/lib/supabase/server'
+import { getUser, createClient } from '@/lib/supabase/server'
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // /admin/login은 인증 체크 제외
-  const isLoginPage = false // 실제로는 pathname 체크 필요
+  // Middleware에서 이미 인증 체크를 하므로, 여기서는 사용자 정보만 가져옴
+  const user = await getUser()
 
-  return <>{children}</>
-}
-
-async function AdminLayoutWithAuth({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const { authorized, user } = await requireAdmin()
-
-  if (!authorized) {
-    redirect('/admin/login')
+  // /admin/login 페이지는 Middleware에서 제외되므로, user가 없으면 로그인 페이지
+  if (!user) {
+    return <>{children}</>
   }
 
   async function logout() {
@@ -59,7 +50,7 @@ async function AdminLayoutWithAuth({
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-300">{user?.email}</span>
+              <span className="text-sm text-gray-300">{user.email}</span>
               <form action={logout}>
                 <button
                   type="submit"
@@ -78,5 +69,3 @@ async function AdminLayoutWithAuth({
     </div>
   )
 }
-
-export { AdminLayoutWithAuth }

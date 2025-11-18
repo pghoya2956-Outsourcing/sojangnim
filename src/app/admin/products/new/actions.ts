@@ -1,9 +1,16 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, requireAdmin } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 export async function createProduct(formData: FormData) {
+  // 인증 체크
+  const { authorized } = await requireAdmin()
+
+  if (!authorized) {
+    throw new Error('Unauthorized')
+  }
+
   const supabase = await createClient()
 
   // Specs 처리
