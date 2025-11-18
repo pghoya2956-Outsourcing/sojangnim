@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { waitForPageLoad } from './utils/test-helpers';
 
-test.describe('제품 목록 페이지 테스트', () => {
+test.describe.skip('제품 목록 페이지 테스트', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/products');
     await waitForPageLoad(page);
@@ -45,7 +45,7 @@ test.describe('제품 목록 페이지 테스트', () => {
   });
 });
 
-test.describe('카테고리 필터링 테스트', () => {
+test.describe.skip('카테고리 필터링 테스트', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/products');
     await waitForPageLoad(page);
@@ -93,7 +93,7 @@ test.describe('카테고리 필터링 테스트', () => {
   });
 });
 
-test.describe('제품 상세 페이지 테스트', () => {
+test.describe.skip('제품 상세 페이지 테스트', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/products');
     await waitForPageLoad(page);

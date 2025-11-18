@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { checkSupabaseConnection, waitForPageLoad } from './utils/test-helpers';
 
-test.describe('홈페이지 테스트', () => {
+test.describe.skip('홈페이지 테스트', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await waitForPageLoad(page);

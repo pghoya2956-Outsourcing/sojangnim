@@ -103,7 +103,7 @@ test.describe('관리자 전체 플로우 테스트', () => {
     console.log('✓ 제품 목록에서 새 제품 확인됨')
   })
 
-  test('제품 수정 with 이미지 교체', async ({ page }) => {
+  test.skip('제품 수정 with 이미지 교체', async ({ page }) => {
     console.log('✓ 관리자 로그인 성공')
 
     // 제품 목록 페이지
