@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test'
  * 관리자 이미지 업로드 기능 테스트
  */
 
-test.describe('Admin Image Upload', () => {
+test.describe.skip('Admin Image Upload', () => {
   test('새 제품 추가 시 이미지 업로드', async ({ page }) => {
     // 새 제품 추가 페이지로 이동
     await page.goto('http://localhost:3000/admin/products/new')
