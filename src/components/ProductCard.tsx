@@ -45,7 +45,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-shadow duration-300 flex flex-col h-full">
+    <div
+      data-testid="product-card"
+      className="bg-white rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-shadow duration-300 flex flex-col h-full"
+    >
       {/* Product Image - 클릭 시 상세 페이지 */}
       <Link href={`/products/${product.id}`}>
         <div className="w-full h-[182px] bg-[#fafafa] flex items-center justify-center text-[3.5rem] cursor-pointer hover:opacity-90 transition-opacity">
