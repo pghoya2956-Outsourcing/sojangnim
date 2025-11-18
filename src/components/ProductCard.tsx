@@ -9,13 +9,6 @@ interface ProductCardProps {
   product: ProductWithCategory
 }
 
-const BADGE_COLORS = {
-  '신제품': 'bg-blue-500',
-  '베스트': 'bg-red-500',
-  '프리미엄': 'bg-purple-500',
-  '할인': 'bg-green-500',
-} as const
-
 export default function ProductCard({ product }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1)
   const addItem = useCartStore((state) => state.addItem)

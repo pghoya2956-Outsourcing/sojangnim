@@ -32,33 +32,3 @@ export function formatDate(date: Date | string): string {
     day: 'numeric',
   }).format(d);
 }
-
-/**
- * 카테고리 슬러그를 한글 이름으로 변환
- * @param slug - 카테고리 슬러그 (예: "power-tools")
- * @returns 한글 카테고리 이름 (예: "전동공구")
- */
-export function getCategoryName(slug: string): string {
-  const categoryMap: Record<string, string> = {
-    'power-tools': '전동공구',
-    'air-tools': '에어공구',
-    'measuring-tools': '측정기',
-    'welding': '용접장비',
-    'safety': '안전용품',
-  };
-
-  return categoryMap[slug] || slug;
-}
-
-/**
- * 제품 수량 표시 텍스트 생성
- * @param count - 제품 수량
- * @returns "제품 N개" 형식의 문자열
- *
- * @example
- * formatProductCount(5) // "제품 5개"
- * formatProductCount(0) // "제품 0개"
- */
-export function formatProductCount(count: number): string {
-  return `제품 ${count}개`;
-}

@@ -87,7 +87,7 @@ export function convertCartItemsToQuotationItems(cartItems: CartItem[]): Quotati
     return {
       seq: index + 1,
       name: item.product.name,
-      spec: item.product.description,
+      spec: item.product.description || '-',
       quantity: item.quantity,
       unitPrice: item.product.price,
       supplyPrice,
