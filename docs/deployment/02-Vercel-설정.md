@@ -131,19 +131,26 @@ vercel
 
 **Add Environment Variables** 클릭
 
+**Supabase Dashboard → Vercel 환경 변수 매핑**:
+
+| Supabase Dashboard 위치 | Supabase 표시 이름 | Vercel 환경 변수 이름 |
+|------------------------|-------------------|---------------------|
+| Settings → Data API | Project URL | `NEXT_PUBLIC_SUPABASE_URL` |
+| Settings → API Keys | Publishable key (anon) | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+
 **변수 추가**:
 
 1. **NEXT_PUBLIC_SUPABASE_URL**
    - Name: `NEXT_PUBLIC_SUPABASE_URL`
-   - Value: `https://xxx.supabase.co` (Supabase Dashboard에서 복사)
+   - Value: `https://xxx.supabase.co` (Settings → Data API에서 복사)
    - Environment: `Production`, `Preview` 체크
 
 2. **NEXT_PUBLIC_SUPABASE_ANON_KEY**
    - Name: `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - Value: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+   - Value: Supabase의 **Publishable key** 값 (Settings → API Keys에서 복사)
    - Environment: `Production`, `Preview` 체크
 
-> 💡 Supabase 키는 **Settings → API**에서 확인할 수 있습니다.
+> ⚠️ **Secret key**는 서버 전용입니다. 클라이언트에 노출하면 안 됩니다!
 
 ### Deploy 클릭
 

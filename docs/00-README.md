@@ -62,10 +62,16 @@ Vercel과 Supabase Cloud로 운영 환경에 배포합니다.
 
 프로덕션 환경의 모니터링과 유지보수를 합니다.
 
-- **[Admin 운영](./operations/admin-operations.md)** - 제품 추가/수정
-- **[모니터링](./operations/monitoring.md)** - Vercel/Supabase 모니터링
-- **[데이터베이스 유지보수](./operations/database-maintenance.md)** - 백업/복구
-- **[스케일링](./operations/scaling.md)** - 트래픽 증가 대응
+- **[Admin 운영](./operations/01-관리자-운영.md)** - 제품 추가/수정
+- **[데이터베이스 유지보수](./operations/02-데이터베이스-유지보수.md)** - 백업/복구
+- **[모니터링](./operations/03-모니터링.md)** - Vercel/Supabase 모니터링
+
+### 🚀 확장 기능
+
+프로젝트를 더 큰 규모나 다양한 요구사항에 맞춰 확장합니다.
+
+- **[확장 기능 개요](./extensions/00-README.md)** - 확장 기능 전체 가이드
+- **[멀티 테넌트 아키텍처](./extensions/01-멀티-테넌트.md)** - N개 업장 운영
 
 ## 🎯 상황별 가이드
 
