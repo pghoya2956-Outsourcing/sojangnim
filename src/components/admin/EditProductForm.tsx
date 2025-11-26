@@ -69,13 +69,16 @@ export default function EditProductForm({ product, categories }: EditProductForm
     e.preventDefault()
     setLoading(true)
 
+    // FormData를 await 전에 먼저 생성 (이벤트 풀링으로 인한 무효화 방지)
+    const submitFormData = new FormData(e.currentTarget)
+
     try {
       // 이미지가 변경되었으면 기존 이미지 삭제
       if (previousImageUrl && previousImageUrl !== imageUrl && imageUrl !== null) {
         await deleteProductImage(previousImageUrl)
       }
 
-      const formData = new FormData(e.currentTarget)
+      const formData = submitFormData
 
       // Specs를 JSON 객체로 변환
       const specsObject: Record<string, string> = {}
