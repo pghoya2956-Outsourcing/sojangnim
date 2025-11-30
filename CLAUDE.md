@@ -80,12 +80,44 @@ graph LR
 - 시드 데이터: `supabase/seed.sql`
 
 ```sql
--- 핵심 테이블 구조
-categories (id, name, slug, created_at)
-products (id, name, description, price, image_url, category_id, badge, specs, created_at)
+-- 핵심 테이블 구조 (멀티테넌트)
+tenants (id, slug, name, domain, theme, company_info, plan, limits, is_active)
+categories (id, name, slug, tenant_id, created_at)
+products (id, name, description, price, image_url, category_id, tenant_id, badge, specs, created_at)
+admin_users (id, email, role, tenant_id, created_at)
 
 -- badge는 ENUM: '신제품' | '베스트' | '프리미엄' | '할인'
 -- specs는 JSONB: {"전압": "20V", "토크": "180Nm", ...}
+-- theme는 JSONB: 브랜딩 설정 (로고, 색상 등)
+-- company_info는 JSONB: 견적서용 회사 정보
+```
+
+### 멀티테넌트 아키텍처
+
+**비즈니스 모델**: 하나의 Supabase DB, N개의 독립 프론트엔드
+
+```mermaid
+graph TB
+    A[프론트엔드 A<br/>company-a.com] --> D[Supabase 1개]
+    B[프론트엔드 B<br/>company-b.com] --> D
+    C[프론트엔드 C<br/>company-c.com] --> D
+    D --> E[tenant_id로 데이터 격리]
+```
+
+**환경변수**:
+- `TENANT_SLUG`: 테넌트 식별자 (서버 전용)
+- `SUPABASE_SERVICE_ROLE_KEY`: Service Role Key (서버 전용)
+
+**사용법**:
+```typescript
+// Server Component에서 테넌트 기반 데이터 조회
+import { getServerSupabase } from '@/lib/supabase/server'
+
+const { tenant, raw: supabase } = await getServerSupabase()
+const { data } = await supabase
+  .from('products')
+  .select('*')
+  .eq('tenant_id', tenant.id)
 ```
 
 ### 상태 관리 흐름
