@@ -1,8 +1,9 @@
-import { createServerClient } from '@supabase/ssr'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
+import type { Database } from '@/types/supabase'
 
 // ============================================
 // 기본 Supabase 클라이언트 (인증용)
@@ -11,7 +12,7 @@ import { cache } from 'react'
 export async function createClient() {
   const cookieStore = await cookies()
 
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -19,7 +20,7 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
@@ -37,48 +38,80 @@ export async function createClient() {
 // 테넌트 타입 정의
 // ============================================
 
+// JSON 필드 상세 타입
+export interface TenantTheme {
+  brandName: string
+  logoImage: string
+  sealImage: string
+  colors: {
+    primary: string
+    accent: string
+  }
+}
+
+export interface TenantCompanyInfo {
+  businessNumber: string
+  representative: string
+  address: string
+  businessType: string
+  businessCategory: string
+  phone: string
+  fax: string
+  email: string
+}
+
+export interface TenantLimits {
+  maxProducts: number
+  maxCategories: number
+  maxQuotationsPerMonth: number
+}
+
 export interface Tenant {
   id: string
   slug: string
   name: string
   domain: string | null
-  theme: {
-    brandName: string
-    logoImage: string
-    sealImage: string
-    colors: {
-      primary: string
-      accent: string
-    }
-  }
-  company_info: {
-    businessNumber: string
-    representative: string
-    address: string
-    businessType: string
-    businessCategory: string
-    phone: string
-    fax: string
-    email: string
-  }
+  theme: TenantTheme
+  company_info: TenantCompanyInfo
   plan: 'free' | 'pro' | 'enterprise'
-  limits: {
-    maxProducts: number
-    maxCategories: number
-    maxQuotationsPerMonth: number
-  }
+  limits: TenantLimits
   is_active: boolean
+}
+
+// 기본값 상수
+const DEFAULT_THEME: TenantTheme = {
+  brandName: '',
+  logoImage: '',
+  sealImage: '',
+  colors: { primary: '#1a1a1a', accent: '#888' }
+}
+
+const DEFAULT_COMPANY_INFO: TenantCompanyInfo = {
+  businessNumber: '',
+  representative: '',
+  address: '',
+  businessType: '',
+  businessCategory: '',
+  phone: '',
+  fax: '',
+  email: ''
+}
+
+const DEFAULT_LIMITS: TenantLimits = {
+  maxProducts: 100,
+  maxCategories: 10,
+  maxQuotationsPerMonth: 100
 }
 
 // ============================================
 // Service Role 클라이언트 (테넌트 조회용)
 // ============================================
 
-function getServiceClient() {
+function getServiceClient(): SupabaseClient<Database> {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   // Service Role Key가 없으면 Anon Key 사용 (로컬 개발용)
-  return createSupabaseClient(
+  return createSupabaseClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     serviceRoleKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -112,19 +145,47 @@ export const getTenant = cache(async (): Promise<Tenant> => {
     throw new Error(`Invalid tenant configuration: ${tenantSlug}`)
   }
 
-  return data as Tenant
+  // JSON 필드를 안전하게 변환
+  const theme = (data.theme && typeof data.theme === 'object' && !Array.isArray(data.theme))
+    ? { ...DEFAULT_THEME, ...data.theme as object } as TenantTheme
+    : DEFAULT_THEME
+
+  const company_info = (data.company_info && typeof data.company_info === 'object' && !Array.isArray(data.company_info))
+    ? { ...DEFAULT_COMPANY_INFO, ...data.company_info as object } as TenantCompanyInfo
+    : DEFAULT_COMPANY_INFO
+
+  const limits = (data.limits && typeof data.limits === 'object' && !Array.isArray(data.limits))
+    ? { ...DEFAULT_LIMITS, ...data.limits as object } as TenantLimits
+    : DEFAULT_LIMITS
+
+  const plan = (['free', 'pro', 'enterprise'].includes(data.plan || ''))
+    ? data.plan as 'free' | 'pro' | 'enterprise'
+    : 'free'
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    name: data.name,
+    domain: data.domain,
+    theme,
+    company_info,
+    plan,
+    limits,
+    is_active: data.is_active ?? true
+  }
 })
 
 // ============================================
 // 테넌트 기반 Supabase 클라이언트
 // ============================================
 
+// 테이블 이름 타입
+type TableName = keyof Database['public']['Tables']
+
 export interface TenantSupabase {
   tenant: Tenant
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  from: (table: string) => any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  raw: any
+  from: SupabaseClient<Database>['from']
+  raw: SupabaseClient<Database>
 }
 
 /**
@@ -138,28 +199,11 @@ export async function getServerSupabase(): Promise<TenantSupabase> {
 
   return {
     tenant,
-    // tenant_id 필터가 자동 적용되는 from 메서드
-    from: (table: string) => {
-      const query = serviceClient.from(table)
-      // 체이닝을 위해 원본 반환 (호출부에서 .eq('tenant_id', tenant.id) 추가 필요)
-      // 자동 필터링은 별도 래퍼 필요 - 현재는 명시적 사용 권장
-      return query
-    },
+    // 원본 from 메서드를 직접 바인딩
+    from: serviceClient.from.bind(serviceClient),
     // 원본 클라이언트 (tenant_id 직접 관리 시)
     raw: serviceClient
   }
-}
-
-/**
- * 테넌트 ID를 자동으로 주입하는 헬퍼 함수들
- */
-export async function queryWithTenant<T>(
-  table: string,
-  queryFn: (query: ReturnType<ReturnType<typeof createSupabaseClient>['from']>, tenantId: string) => Promise<{ data: T | null; error: Error | null }>
-): Promise<{ data: T | null; error: Error | null; tenant: Tenant }> {
-  const { tenant, raw } = await getServerSupabase()
-  const result = await queryFn(raw.from(table), tenant.id)
-  return { ...result, tenant }
 }
 
 // ============================================
@@ -202,7 +246,7 @@ export async function isAdmin(email: string) {
 export async function requireAdmin() {
   const user = await getUser()
 
-  if (!user) {
+  if (!user || !user.email) {
     redirect('/admin/login')
   }
 

@@ -1,30 +1,13 @@
 /**
- * Supabase 데이터베이스 스키마 타입 정의
+ * Supabase 데이터베이스 타입 재정의
+ * 실제 타입은 supabase.ts에서 자동 생성됨
  */
 
-import type { ProductBadge } from './product';
+import type { Tables } from './supabase'
 
-/**
- * categories 테이블 스키마
- */
-export interface CategorySchema {
-  id: string;
-  name: string;
-  slug: string;
-  created_at: string;
-}
-
-/**
- * products 테이블 스키마
- */
-export interface ProductSchema {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image_url: string | null;
-  category_id: string;
-  badge: ProductBadge | null;
-  specs: Record<string, string> | null;
-  created_at: string;
-}
+// 편의를 위한 타입 별칭
+export type CategorySchema = Tables<'categories'>
+export type ProductSchema = Tables<'products'>
+export type TenantSchema = Tables<'tenants'>
+export type AdminUserSchema = Tables<'admin_users'>
+export type TenantUsageSchema = Tables<'tenant_usage'>

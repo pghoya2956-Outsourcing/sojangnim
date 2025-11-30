@@ -1,24 +1,23 @@
-export type ProductBadge = '신제품' | '베스트' | '프리미엄' | '할인' | null
+import type { Database, Tables, Enums } from './supabase'
 
-export interface Category {
-  id: string
-  name: string
-  slug: string
-  created_at: string
-}
+// Supabase 자동 생성 타입 기반으로 재정의
+export type ProductBadge = Enums<'product_badge'> | null
 
-export interface Product {
-  id: string
-  name: string
-  description: string | null
-  price: number
-  image_url: string | null
-  category_id: string | null
-  badge: ProductBadge
-  specs: Record<string, string> | null
-  created_at: string
-}
+export type Category = Tables<'categories'>
+
+export type Product = Tables<'products'>
 
 export interface ProductWithCategory extends Product {
   category?: Category | null
+}
+
+// JSON 필드 타입 헬퍼 (specs 필드 접근 시 사용)
+export type ProductSpecs = Record<string, string> | null
+
+// 제품 스펙을 안전하게 가져오는 헬퍼
+export function getProductSpecs(specs: Database['public']['Tables']['products']['Row']['specs']): ProductSpecs {
+  if (!specs || typeof specs !== 'object' || Array.isArray(specs)) {
+    return null
+  }
+  return specs as Record<string, string>
 }

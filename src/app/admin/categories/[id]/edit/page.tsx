@@ -125,7 +125,7 @@ export default async function EditCategoryPage({ params }: Props) {
             <input
               type="text"
               disabled
-              value={new Date(category.created_at).toLocaleString('ko-KR')}
+              value={category.created_at ? new Date(category.created_at).toLocaleString('ko-KR') : '-'}
               className="w-full px-4 py-3 border border-[#e0e0e0] rounded-lg bg-[#f7f7f7] text-[#666]"
             />
           </div>

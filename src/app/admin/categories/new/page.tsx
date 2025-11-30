@@ -29,7 +29,7 @@ function slugify(text: string): string {
 
 async function createCategory(formData: FormData) {
   'use server'
-  await requireAdmin()
+  const { tenant } = await requireAdmin()
 
   const name = formData.get('name') as string
   let slug = formData.get('slug') as string
@@ -48,6 +48,7 @@ async function createCategory(formData: FormData) {
   const { error } = await supabase.from('categories').insert({
     name,
     slug,
+    tenant_id: tenant.id,
   })
 
   if (error) {

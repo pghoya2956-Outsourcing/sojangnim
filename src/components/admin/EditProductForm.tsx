@@ -5,21 +5,15 @@ import { useRouter } from 'next/navigation'
 import { updateProduct } from '@/app/admin/products/[id]/edit/actions'
 import ImageUpload from '@/components/admin/ImageUpload'
 import { deleteProductImage } from '@/lib/supabase/storage'
+import type { Product, Category, getProductSpecs } from '@/types/product'
+import type { Json } from '@/types/supabase'
 
-interface Product {
-  id: string
-  name: string
-  description: string | null
-  price: number
-  category_id: string | null
-  badge: string | null
-  image_url: string | null
-  specs: Record<string, string> | null
-}
-
-interface Category {
-  id: string
-  name: string
+// specs 필드를 안전하게 처리하기 위한 헬퍼
+function parseSpecs(specs: Json | null): Record<string, string> | null {
+  if (!specs || typeof specs !== 'object' || Array.isArray(specs)) {
+    return null
+  }
+  return specs as Record<string, string>
 }
 
 interface EditProductFormProps {
@@ -33,9 +27,10 @@ export default function EditProductForm({ product, categories }: EditProductForm
   const [imageUrl, setImageUrl] = useState<string | null>(product.image_url)
   const [previousImageUrl] = useState<string | null>(product.image_url)
 
-  // Specs 초기화
-  const initialSpecs = product.specs && typeof product.specs === 'object'
-    ? Object.entries(product.specs).map(([key, value]) => ({ key, value }))
+  // Specs 초기화 (Json 타입을 안전하게 파싱)
+  const parsedSpecs = parseSpecs(product.specs)
+  const initialSpecs = parsedSpecs
+    ? Object.entries(parsedSpecs).map(([key, value]) => ({ key, value: String(value) }))
     : [{ key: '', value: '' }]
 
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>(
