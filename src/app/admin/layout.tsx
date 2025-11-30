@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getUser, createClient } from '@/lib/supabase/server'
+import ToastHandler from '@/components/admin/ToastHandler'
+import { Suspense } from 'react'
 
 export default async function AdminLayout({
   children,
@@ -24,6 +26,9 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
+      <Suspense fallback={null}>
+        <ToastHandler />
+      </Suspense>
       {/* Admin Header */}
       <header className="bg-[#1a1a1a] text-white shadow-lg">
         <div className="max-w-[1400px] mx-auto px-8">
@@ -38,6 +43,12 @@ export default async function AdminLayout({
                   className="text-sm hover:text-gray-300 transition-colors"
                 >
                   제품 관리
+                </Link>
+                <Link
+                  href="/admin/categories"
+                  className="text-sm hover:text-gray-300 transition-colors"
+                >
+                  카테고리 관리
                 </Link>
                 <Link
                   href="/"

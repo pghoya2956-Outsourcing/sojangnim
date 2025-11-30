@@ -18,6 +18,7 @@ export function getCompanyInfo(): CompanyInfo {
     businessType: process.env.NEXT_PUBLIC_COMPANY_BUSINESS_TYPE || '',
     businessCategory: process.env.NEXT_PUBLIC_COMPANY_BUSINESS_CATEGORY || '',
     sealImage: process.env.NEXT_PUBLIC_COMPANY_SEAL_IMAGE || undefined,
+    logoImage: process.env.NEXT_PUBLIC_COMPANY_LOGO_IMAGE || undefined,
   }
 }
 

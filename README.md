@@ -5,15 +5,58 @@ tags: [nextjs, supabase, e-commerce, catalog]
 
 # 소장님 (Sojangnim)
 
+> **B2B Product Catalog with Quote Generation**
+>
+> A lightweight product catalog website for generating quotes. Browse products, add to cart, and print professional quotes — no signup required.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/sojangnim&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20connection%20details&envLink=https://supabase.com/dashboard/project/_/settings/api)
+
 견적서 출력용 제품 카탈로그 웹사이트. 회원가입 없이 제품을 조회하고 장바구니에 담아 견적서를 출력하는 간소화된 B2B 카탈로그입니다.
 
-## 주요 기능
+![Demo Screenshot](/.playwright-mcp/demo-products-page.png)
 
-- 📦 **제품 카탈로그**: 카테고리별 제품 조회
-- 🔍 **카테고리 필터링**: 5개 카테고리로 분류
-- 🛒 **장바구니**: 제품 담기, 수량 조절, localStorage 저장
-- 🖨️ **견적서 출력**: 장바구니 내역을 견적서로 출력
-- 🚫 **인증 불필요**: 회원가입/로그인 없이 즉시 사용
+## 주요 기능 / Features
+
+| 기능 | Feature | 설명 |
+|------|---------|------|
+| 📦 제품 카탈로그 | Product Catalog | 카테고리별 제품 조회, 검색, 페이지네이션 |
+| 🔍 카테고리 필터링 | Category Filter | 7개 카테고리로 분류 (전동공구, 에어공구, 측정기 등) |
+| 🛒 장바구니 | Shopping Cart | 제품 담기, 수량 조절, localStorage 저장 |
+| 🖨️ 견적서 출력 | Quote Generation | 장바구니 내역을 견적서로 출력/PDF 저장 |
+| 🔐 관리자 페이지 | Admin Dashboard | 제품 CRUD, 이미지 업로드 |
+| 🚫 인증 불필요 | No Auth Required | 회원가입/로그인 없이 즉시 사용 |
+
+---
+
+## Quick Deploy (원클릭 배포)
+
+### 1. Supabase 프로젝트 생성
+
+1. [Supabase](https://supabase.com) 가입
+2. New Project 생성
+3. SQL Editor에서 마이그레이션 실행:
+   - `supabase/migrations/` 폴더의 SQL 파일들을 순서대로 실행
+   - `supabase/seed.sql` 실행 (샘플 데이터)
+
+### 2. Vercel 배포
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/sojangnim&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20connection%20details&envLink=https://supabase.com/dashboard/project/_/settings/api)
+
+1. 위 버튼 클릭
+2. GitHub 저장소 연결
+3. 환경 변수 입력:
+   - `NEXT_PUBLIC_SUPABASE_URL`: Supabase 프로젝트 URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon key
+4. Deploy 클릭
+
+### 3. 관리자 설정
+
+```sql
+-- Supabase SQL Editor에서 실행
+INSERT INTO admin_users (email) VALUES ('your-email@example.com');
+```
+
+---
 
 ## 기술 스택
 
@@ -97,7 +140,7 @@ sojangnim/
 │       └── product.ts
 ├── supabase/
 │   ├── migrations/       # 데이터베이스 마이그레이션
-│   └── seed.sql          # 시드 데이터 (5개 카테고리, 8개 제품)
+│   └── seed.sql          # 시드 데이터 (7개 카테고리, 24개 제품)
 ├── tests/
 │   └── e2e/              # Playwright E2E 테스트
 │       ├── home.spec.ts
@@ -326,4 +369,27 @@ ISC
 
 ---
 
-**Made with ❤️ by Claude Code**
+## 제공자 정보
+
+| 항목 | 내용 |
+|------|------|
+| 제공자 | [회사명 또는 개인명] |
+| 이메일 | [contact@example.com] |
+| 전화번호 | [010-0000-0000] |
+| 사업자등록번호 | [000-00-00000] (선택) |
+
+### 기술 지원
+
+- **이메일 문의**: 영업일 기준 24시간 내 응답
+- **긴급 문의**: 호스팅 고객 대상 전화 지원
+- **문서**: [기술 문서 링크]
+
+### 환불 정책
+
+- 구축 서비스: 착수 전 100% 환불
+- 호스팅 서비스: 30일 내 미사용 시 전액 환불
+- 소스코드 판매: 다운로드 전 환불 가능
+
+---
+
+**Made with Claude Code**

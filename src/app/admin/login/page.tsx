@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { isAdmin } from '@/lib/supabase/server'
+import ToastHandler from '@/components/admin/ToastHandler'
+import { Suspense } from 'react'
 
 export default async function AdminLoginPage() {
   async function login(formData: FormData) {
@@ -18,7 +20,7 @@ export default async function AdminLoginPage() {
     })
 
     if (error) {
-      redirect('/admin/login?error=invalid')
+      redirect('/admin/login?error=' + encodeURIComponent('이메일 또는 비밀번호가 올바르지 않습니다'))
     }
 
     // Admin 권한 확인
@@ -27,7 +29,7 @@ export default async function AdminLoginPage() {
     if (!isAdminUser) {
       // Admin이 아니면 로그아웃
       await supabase.auth.signOut()
-      redirect('/admin/login?error=unauthorized')
+      redirect('/admin/login?error=' + encodeURIComponent('관리자 권한이 없는 계정입니다'))
     }
 
     redirect('/admin/products')
@@ -35,6 +37,9 @@ export default async function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f7f7f7]">
+      <Suspense fallback={null}>
+        <ToastHandler />
+      </Suspense>
       <div className="bg-white p-8 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] w-full max-w-md">
         <h1 className="text-2xl font-bold text-[#1a1a1a] mb-6 text-center">
           Admin Login

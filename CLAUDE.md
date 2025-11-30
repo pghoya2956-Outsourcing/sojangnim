@@ -287,3 +287,4 @@ sojangnim/
 - **전체 계획**: `tasks/00-overview.md`
 - **디자인 참고**: `design-mockups/03-professional-clean.html`
 - **Phase 문서**: `tasks/01-supabase-setup.md` ~ `tasks/05-deployment.md`
+- **사업화 문서**: `docs/business/` - 가격 정책, 계약서, 고객 관리

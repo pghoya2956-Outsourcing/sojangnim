@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -52,11 +53,16 @@ export async function isAdmin(email: string) {
   return true
 }
 
+/**
+ * 관리자 권한 필수 확인
+ * unauthorized 시 자동으로 /admin/login으로 redirect
+ * 호출부에서 반환값 확인 없이도 안전함
+ */
 export async function requireAdmin() {
   const user = await getUser()
 
   if (!user) {
-    return { authorized: false, user: null, role: null }
+    redirect('/admin/login')
   }
 
   const supabase = await createClient()
@@ -67,8 +73,8 @@ export async function requireAdmin() {
     .single()
 
   if (!adminData) {
-    return { authorized: false, user, role: null }
+    redirect('/admin/login')
   }
 
-  return { authorized: true, user, role: adminData.role }
+  return { user, role: adminData.role }
 }

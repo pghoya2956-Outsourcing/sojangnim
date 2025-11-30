@@ -14,6 +14,7 @@ export interface CompanyInfo {
   businessType: string         // 업태
   businessCategory: string     // 종목
   sealImage?: string           // 도장 이미지 경로 (선택사항)
+  logoImage?: string           // 회사 로고 이미지 경로 (선택사항)
 }
 
 /**
@@ -21,6 +22,9 @@ export interface CompanyInfo {
  */
 export interface RecipientInfo {
   name: string                 // 회사명/기관명/개인명
+  contactPerson?: string       // 담당자명
+  phone?: string               // 연락처
+  address?: string             // 주소
   type?: RecipientType        // 수신자 타입 (Phase 9-2에서 추가, 선택사항)
 }
 
