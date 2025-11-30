@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/client'
+import { getServerSupabase } from '@/lib/supabase/server'
 import CategorySidebar from '@/components/CategorySidebar'
 import ProductCard from '@/components/ProductCard'
 import ProductSearch from '@/components/ProductSearch'
@@ -17,27 +17,33 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const searchQuery = params.search
   const page = Number(params.page) || 1
 
+  // Get tenant-aware Supabase client
+  const { tenant, raw: supabase } = await getServerSupabase()
+
   // Calculate pagination
   const offset = (page - 1) * PAGE_SIZE
 
-  // Build count query (for total products)
+  // Build count query (for total products) - with tenant filter
   let countQuery = supabase
     .from('products')
     .select('*', { count: 'exact', head: true })
+    .eq('tenant_id', tenant.id)
 
-  // Build data query (for fetching products)
+  // Build data query (for fetching products) - with tenant filter
   let dataQuery = supabase
     .from('products')
     .select('*, category:categories(*)')
+    .eq('tenant_id', tenant.id)
     .order('created_at', { ascending: false })
 
-  // Get category ID if category slug is specified
+  // Get category ID if category slug is specified (also filtered by tenant)
   let categoryId: string | null = null
   if (categorySlug) {
     const { data: category } = await supabase
       .from('categories')
       .select('id')
       .eq('slug', categorySlug)
+      .eq('tenant_id', tenant.id)
       .single()
 
     if (category) {

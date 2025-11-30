@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
+import { getServerSupabase } from '@/lib/supabase/server'
 import type { Category } from '@/types/product'
 
 interface CategorySidebarProps {
@@ -7,9 +7,13 @@ interface CategorySidebarProps {
 }
 
 export default async function CategorySidebar({ currentCategorySlug }: CategorySidebarProps) {
+  // Get tenant-aware Supabase client
+  const { tenant, raw: supabase } = await getServerSupabase()
+
   const { data: categories, error } = await supabase
     .from('categories')
     .select('*')
+    .eq('tenant_id', tenant.id)
     .order('name', { ascending: true })
 
   if (error) {

@@ -1,12 +1,12 @@
 'use server'
 
-import { createClient, requireAdmin } from '@/lib/supabase/server'
+import { requireAdmin, getServerSupabase } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 export async function updateProduct(productId: string, formData: FormData) {
-  await requireAdmin() // unauthorized 시 자동 redirect
+  const { tenant } = await requireAdmin() // unauthorized 시 자동 redirect
 
-  const supabase = await createClient()
+  const { raw: supabase } = await getServerSupabase()
 
   // Specs 처리
   const specsJson = formData.get('specs') as string
@@ -29,10 +29,12 @@ export async function updateProduct(productId: string, formData: FormData) {
     image_url: (formData.get('image_url') as string) || null,
   }
 
+  // 테넌트 검증 후 업데이트
   const { error } = await supabase
     .from('products')
     .update(productData)
     .eq('id', productId)
+    .eq('tenant_id', tenant.id)
 
   if (error) {
     throw new Error(error.message)

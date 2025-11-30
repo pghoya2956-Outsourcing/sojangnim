@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { requireAdmin } from '@/lib/supabase/server'
+import { requireAdmin, getServerSupabase } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 interface Category {
   id: string
@@ -11,13 +11,14 @@ interface Category {
   product_count: number
 }
 
-async function getCategories(): Promise<Category[]> {
-  const supabase = await createClient()
+async function getCategories(tenantId: string): Promise<Category[]> {
+  const { raw: supabase } = await getServerSupabase()
 
-  // 카테고리와 각 카테고리의 제품 수를 가져옴
+  // 카테고리와 각 카테고리의 제품 수를 가져옴 (테넌트 필터)
   const { data: categories, error } = await supabase
     .from('categories')
     .select('*')
+    .eq('tenant_id', tenantId)
     .order('name', { ascending: true })
 
   if (error) {
@@ -25,10 +26,11 @@ async function getCategories(): Promise<Category[]> {
     return []
   }
 
-  // 각 카테고리별 제품 수 계산
+  // 각 카테고리별 제품 수 계산 (테넌트 필터)
   const { data: products } = await supabase
     .from('products')
     .select('category_id')
+    .eq('tenant_id', tenantId)
 
   const productCountMap = new Map<string, number>()
   products?.forEach(p => {
@@ -44,22 +46,28 @@ async function getCategories(): Promise<Category[]> {
 
 async function deleteCategory(formData: FormData) {
   'use server'
-  await requireAdmin()
+  const { tenant } = await requireAdmin()
+  const { raw: supabase } = await getServerSupabase()
 
   const categoryId = formData.get('categoryId') as string
-  const supabase = await createClient()
 
-  // 해당 카테고리의 제품 수 확인
+  // 해당 카테고리의 제품 수 확인 (테넌트 필터)
   const { count } = await supabase
     .from('products')
     .select('*', { count: 'exact', head: true })
     .eq('category_id', categoryId)
+    .eq('tenant_id', tenant.id)
 
   if (count && count > 0) {
     redirect('/admin/categories?error=' + encodeURIComponent('제품이 있는 카테고리는 삭제할 수 없습니다'))
   }
 
-  const { error } = await supabase.from('categories').delete().eq('id', categoryId)
+  // 테넌트 검증 후 삭제
+  const { error } = await supabase
+    .from('categories')
+    .delete()
+    .eq('id', categoryId)
+    .eq('tenant_id', tenant.id)
 
   if (error) {
     redirect('/admin/categories?error=' + encodeURIComponent('카테고리 삭제에 실패했습니다'))
@@ -70,8 +78,8 @@ async function deleteCategory(formData: FormData) {
 }
 
 export default async function AdminCategoriesPage() {
-  await requireAdmin()
-  const categories = await getCategories()
+  const { tenant } = await requireAdmin()
+  const categories = await getCategories(tenant.id)
 
   return (
     <div className="max-w-[1400px] mx-auto px-8 py-8">

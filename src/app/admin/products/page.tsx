@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { requireAdmin, createClient } from '@/lib/supabase/server'
+import { requireAdmin, getServerSupabase } from '@/lib/supabase/server'
 
 export default async function AdminProductsPage() {
-  await requireAdmin() // unauthorized 시 자동 redirect
+  const { tenant } = await requireAdmin() // unauthorized 시 자동 redirect
 
-  const supabaseClient = await createClient()
-  const { data: products, error } = await supabaseClient
+  const { raw: supabase } = await getServerSupabase()
+  const { data: products, error } = await supabase
     .from('products')
     .select('*, category:categories(*)')
+    .eq('tenant_id', tenant.id)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -18,8 +19,11 @@ export default async function AdminProductsPage() {
   async function deleteProduct(formData: FormData) {
     'use server'
     const id = formData.get('id') as string
-    const supabase = await createClient()
-    await supabase.from('products').delete().eq('id', id)
+    const { tenant: t } = await requireAdmin()
+    const { raw: sb } = await getServerSupabase()
+
+    // 테넌트 검증 후 삭제
+    await sb.from('products').delete().eq('id', id).eq('tenant_id', t.id)
     redirect('/admin/products')
   }
 
