@@ -69,7 +69,7 @@ export default async function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#e0e0e0]">
-            {products?.map((product) => (
+            {products?.map((product: { id: string; name: string; price: number; badge: string | null; category: { name: string } | null }) => (
               <tr key={product.id} className="hover:bg-[#fafafa]">
                 <td className="px-6 py-4 text-sm text-[#1a1a1a] font-medium">
                   {product.name}

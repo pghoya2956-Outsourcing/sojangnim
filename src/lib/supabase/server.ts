@@ -121,8 +121,10 @@ export const getTenant = cache(async (): Promise<Tenant> => {
 
 export interface TenantSupabase {
   tenant: Tenant
-  from: (table: string) => ReturnType<ReturnType<typeof createSupabaseClient>['from']>
-  raw: ReturnType<typeof createSupabaseClient>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  from: (table: string) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  raw: any
 }
 
 /**

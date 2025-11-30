@@ -11,6 +11,14 @@ interface Category {
   product_count: number
 }
 
+interface CategoryRow {
+  id: string
+  name: string
+  slug: string
+  created_at: string
+  tenant_id: string
+}
+
 async function getCategories(tenantId: string): Promise<Category[]> {
   const { raw: supabase } = await getServerSupabase()
 
@@ -19,9 +27,9 @@ async function getCategories(tenantId: string): Promise<Category[]> {
     .from('categories')
     .select('*')
     .eq('tenant_id', tenantId)
-    .order('name', { ascending: true })
+    .order('name', { ascending: true }) as { data: CategoryRow[] | null, error: Error | null }
 
-  if (error) {
+  if (error || !categories) {
     console.error('Error fetching categories:', error)
     return []
   }
@@ -30,16 +38,21 @@ async function getCategories(tenantId: string): Promise<Category[]> {
   const { data: products } = await supabase
     .from('products')
     .select('category_id')
-    .eq('tenant_id', tenantId)
+    .eq('tenant_id', tenantId) as { data: { category_id: string | null }[] | null }
 
   const productCountMap = new Map<string, number>()
   products?.forEach(p => {
-    const count = productCountMap.get(p.category_id) || 0
-    productCountMap.set(p.category_id, count + 1)
+    if (p.category_id) {
+      const count = productCountMap.get(p.category_id) || 0
+      productCountMap.set(p.category_id, count + 1)
+    }
   })
 
   return categories.map(cat => ({
-    ...cat,
+    id: cat.id,
+    name: cat.name,
+    slug: cat.slug,
+    created_at: cat.created_at,
     product_count: productCountMap.get(cat.id) || 0
   }))
 }
