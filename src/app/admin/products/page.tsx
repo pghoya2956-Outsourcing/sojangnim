@@ -31,20 +31,12 @@ export default async function AdminProductsPage() {
     <div className="max-w-[1400px] mx-auto px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-[#1a1a1a]">제품 관리</h1>
-        <div className="flex gap-3">
-          <Link
-            href="/admin/products/import"
-            className="bg-white text-[#1a1a1a] px-6 py-3 rounded-md border border-[#1a1a1a] hover:bg-gray-50 transition-colors font-semibold"
-          >
-            CSV 일괄 등록
-          </Link>
-          <Link
-            href="/admin/products/new"
-            className="bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-colors font-semibold"
-          >
-            + 새 제품 추가
-          </Link>
-        </div>
+        <Link
+          href="/admin/products/new"
+          className="bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-colors font-semibold"
+        >
+          + 새 제품 추가
+        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
