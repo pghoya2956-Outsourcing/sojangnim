@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { useCartStore } from '@/store/cartStore'
 import type { ProductWithCategory } from '@/types/product'
 
@@ -24,14 +25,14 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault()
 
     if (quantity < 1) {
-      alert('수량은 1개 이상이어야 합니다.')
+      toast.error('수량은 1개 이상이어야 합니다.')
       return
     }
 
     addItem(product, quantity)
 
-    // 간단한 알림
-    alert(`${product.name} ${quantity}개가 장바구니에 담겼습니다.`)
+    // 토스트 알림
+    toast.success(`${product.name} ${quantity}개가 장바구니에 담겼습니다.`)
 
     // 수량 초기화
     setQuantity(1)
@@ -114,7 +115,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <button
             onClick={handleAddToCart}
-            className="flex-1 bg-[#1a1a1a] text-white px-4 py-2 rounded-md hover:bg-black transition-colors font-semibold text-sm"
+            className="flex-1 bg-[#1a1a1a] text-white px-4 py-2 rounded-md hover:bg-black transition-all duration-100 font-semibold text-sm active:scale-[0.97]"
           >
             🛒 담기
           </button>

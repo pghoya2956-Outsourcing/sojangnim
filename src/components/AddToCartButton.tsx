@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
+import { toast } from 'sonner'
 import { useCartStore } from '@/store/cartStore'
 import type { Product } from '@/types/product'
-import { useState } from 'react'
 
 interface AddToCartButtonProps {
   product: Product
@@ -14,7 +15,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
   const handleAddToCart = () => {
     addItem(product, quantity)
-    alert(`${product.name} ${quantity}개가 장바구니에 추가되었습니다!`)
+    toast.success(`${product.name} ${quantity}개가 장바구니에 추가되었습니다!`)
   }
 
   return (
@@ -50,7 +51,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       {/* Add to Cart Button */}
       <button
         onClick={handleAddToCart}
-        className="w-full bg-[#1a1a1a] text-white px-8 py-4 rounded-md font-semibold hover:bg-black transition-colors text-base"
+        className="w-full bg-[#1a1a1a] text-white px-8 py-4 rounded-md font-semibold hover:bg-black transition-all duration-100 text-base active:scale-[0.98]"
       >
         장바구니에 담기
       </button>
