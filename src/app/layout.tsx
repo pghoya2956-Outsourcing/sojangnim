@@ -4,7 +4,9 @@ import './globals.css'
 import { brandConfig } from '@/lib/config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import NavigationProgress from '@/components/NavigationProgress'
 import { Toaster } from 'sonner'
+import { Suspense } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +23,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${inter.className} flex flex-col min-h-screen bg-gray-50`}>
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         <Toaster position="top-right" richColors />
         <Header />
         <main className="flex-1">

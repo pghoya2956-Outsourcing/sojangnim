@@ -220,14 +220,14 @@ export default function NewProductForm() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-colors font-semibold disabled:opacity-50"
+            className="flex-1 bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-all duration-100 font-semibold disabled:opacity-50 active:scale-[0.98] disabled:active:scale-100"
           >
             {loading ? '저장 중...' : '제품 추가'}
           </button>
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-3 border border-[#e0e0e0] rounded-md hover:bg-[#f5f5f5] transition-colors font-semibold text-[#1a1a1a]"
+            className="px-6 py-3 border border-[#e0e0e0] rounded-md hover:bg-[#f5f5f5] transition-all duration-100 font-semibold text-[#1a1a1a] active:scale-[0.98]"
           >
             취소
           </button>

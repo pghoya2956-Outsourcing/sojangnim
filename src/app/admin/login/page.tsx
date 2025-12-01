@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { isAdmin, getUser } from '@/lib/supabase/server'
 import ToastHandler from '@/components/admin/ToastHandler'
+import SubmitButton from '@/components/ui/SubmitButton'
 import { Suspense } from 'react'
 
 export default async function AdminLoginPage() {
@@ -89,12 +90,12 @@ export default async function AdminLoginPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-colors font-semibold"
+          <SubmitButton
+            loadingText="로그인 중..."
+            className="w-full bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black font-semibold"
           >
             Login
-          </button>
+          </SubmitButton>
         </form>
 
         <p className="mt-6 text-center text-sm text-[#666]">
