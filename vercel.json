@@ -12,8 +12,6 @@
     }
   },
   "git": {
-    "deploymentEnabled": {
-      "feature/commercialization": false
-    }
+    "deploymentEnabled": false
   }
 }
