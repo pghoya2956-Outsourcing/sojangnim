@@ -5,6 +5,13 @@
 -- 테넌트 변수 (CTE로 관리)
 -- 마이그레이션에서 생성된 'default' 테넌트 사용
 
+-- ============================================
+-- Auth 사용자는 Supabase Studio에서 수동 생성
+-- http://localhost:54323 → Authentication → Users → Add User
+-- admin@example.com / admin1234
+-- demo@example.com / demo1234
+-- ============================================
+
 -- Admin 사용자 데이터
 INSERT INTO admin_users (email, tenant_id)
 SELECT 'admin@example.com', id FROM tenants WHERE slug = 'default'

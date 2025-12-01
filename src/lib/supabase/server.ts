@@ -225,6 +225,19 @@ export async function isAdmin(email: string) {
   const tenant = await getTenant()
   const supabase = await createClient()
 
+  // 먼저 super_admin인지 확인 (테넌트 무관)
+  const { data: superAdminData } = await supabase
+    .from('admin_users')
+    .select('email, role')
+    .eq('email', email)
+    .eq('role', 'super_admin')
+    .single()
+
+  if (superAdminData) {
+    return true // super_admin은 모든 테넌트 접근 가능
+  }
+
+  // 일반 admin은 해당 테넌트에 등록되어 있어야 함
   const { data, error } = await supabase
     .from('admin_users')
     .select('email, role')
@@ -241,6 +254,8 @@ export async function isAdmin(email: string) {
 
 /**
  * 관리자 권한 필수 확인 (테넌트 기반)
+ * - super_admin: 모든 테넌트 접근 가능
+ * - admin: 해당 테넌트만 접근 가능
  * unauthorized 시 자동으로 /admin/login으로 redirect
  */
 export async function requireAdmin() {
@@ -253,6 +268,20 @@ export async function requireAdmin() {
   const tenant = await getTenant()
   const supabase = await createClient()
 
+  // 먼저 super_admin인지 확인 (테넌트 무관)
+  const { data: superAdminData } = await supabase
+    .from('admin_users')
+    .select('email, role, tenant_id')
+    .eq('email', user.email)
+    .eq('role', 'super_admin')
+    .single()
+
+  if (superAdminData) {
+    // super_admin은 모든 테넌트 접근 가능
+    return { user, role: superAdminData.role, tenant }
+  }
+
+  // 일반 admin은 해당 테넌트에 등록되어 있어야 함
   const { data: adminData } = await supabase
     .from('admin_users')
     .select('email, role, tenant_id')
