@@ -1,10 +1,19 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { isAdmin } from '@/lib/supabase/server'
+import { isAdmin, getUser } from '@/lib/supabase/server'
 import ToastHandler from '@/components/admin/ToastHandler'
 import { Suspense } from 'react'
 
 export default async function AdminLoginPage() {
+  // 이미 로그인된 관리자인지 확인
+  const user = await getUser()
+  if (user?.email) {
+    const isAdminUser = await isAdmin(user.email)
+    if (isAdminUser) {
+      redirect('/admin/products')
+    }
+  }
+
   async function login(formData: FormData) {
     'use server'
 
