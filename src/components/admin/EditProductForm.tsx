@@ -90,10 +90,11 @@ export default function EditProductForm({ product, categories }: EditProductForm
 
       await updateProduct(product.id, formData)
       // redirect가 호출되므로 여기는 실행되지 않음
-    } catch (error: any) {
+    } catch (error) {
       // NEXT_REDIRECT는 정상적인 redirect이므로 무시
-      if (error.message !== 'NEXT_REDIRECT') {
-        alert('제품 수정 실패: ' + error.message)
+      const message = error instanceof Error ? error.message : '알 수 없는 오류'
+      if (message !== 'NEXT_REDIRECT') {
+        alert('제품 수정 실패: ' + message)
         setLoading(false)
       }
     }
