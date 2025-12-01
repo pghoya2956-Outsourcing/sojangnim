@@ -58,4 +58,6 @@ nginx/ssl/*.crt
 # temporary documentation
 E2E_TEST_*.md
 IMPLEMENTATION_COMPLETE.md
-tasks/
+
+# archive (로컬 백업용)
+.archive/
