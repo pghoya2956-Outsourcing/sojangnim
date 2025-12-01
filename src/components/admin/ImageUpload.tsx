@@ -32,8 +32,9 @@ export default function ImageUpload({
       // 상태 업데이트
       setImageUrl(publicUrl)
       onImageUrlChange(publicUrl)
-    } catch (err: any) {
-      setError(err.message || '업로드에 실패했습니다')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '업로드에 실패했습니다'
+      setError(message)
       console.error('업로드 에러:', err)
     } finally {
       setUploading(false)
@@ -54,8 +55,9 @@ export default function ImageUpload({
       setImageUrl(null)
       onImageUrlChange(null)
       setError(null)
-    } catch (err: any) {
-      setError(err.message || '이미지 삭제에 실패했습니다')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '이미지 삭제에 실패했습니다'
+      setError(message)
       console.error('삭제 에러:', err)
     }
   }
