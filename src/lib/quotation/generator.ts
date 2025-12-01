@@ -99,12 +99,12 @@ export function convertCartItemsToQuotationItems(cartItems: CartItem[]): Quotati
 /**
  * 견적서 전체 데이터 생성
  * @param cartItems 장바구니 아이템 배열
- * @param recipientName 수신자명
+ * @param recipient 수신자 정보 (RecipientInfo 객체 또는 문자열)
  * @returns QuotationData 객체
  */
 export function generateQuotationData(
   cartItems: CartItem[],
-  recipientName: string
+  recipient: RecipientInfo | string
 ): QuotationData {
   // 1. 견적서 메타데이터 생성
   const now = new Date()
@@ -116,10 +116,10 @@ export function generateQuotationData(
   // 2. 회사 정보 가져오기
   const company = getCompanyInfo()
 
-  // 3. 수신자 정보 생성 (Phase 8에서는 type 없이 사용)
-  const recipient: RecipientInfo = {
-    name: recipientName,
-  }
+  // 3. 수신자 정보 생성
+  const recipientInfo: RecipientInfo = typeof recipient === 'string'
+    ? { name: recipient }
+    : recipient
 
   // 4. 장바구니 아이템을 견적서 아이템으로 변환
   const items = convertCartItemsToQuotationItems(cartItems)
@@ -132,7 +132,7 @@ export function generateQuotationData(
   return {
     metadata,
     company,
-    recipient,
+    recipient: recipientInfo,
     items,
     totalSupplyPrice,
     totalTaxAmount,

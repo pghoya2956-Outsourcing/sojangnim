@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import RecipientModal from '@/components/quotation/RecipientModal'
 import QuotationTemplate from '@/components/quotation/QuotationTemplate'
 import { generateQuotationData } from '@/lib/quotation/generator'
-import type { QuotationData } from '@/types/quotation'
+import type { QuotationData, RecipientInfo } from '@/types/quotation'
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false)
@@ -28,9 +28,9 @@ export default function CartPage() {
     setIsModalOpen(true)
   }
 
-  const handleRecipientSubmit = (recipientName: string) => {
+  const handleRecipientSubmit = (recipient: RecipientInfo) => {
     // 1. QuotationData 생성
-    const data = generateQuotationData(items, recipientName)
+    const data = generateQuotationData(items, recipient)
     setQuotationData(data)
 
     // 2. 모달 닫기

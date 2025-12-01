@@ -24,7 +24,20 @@ export default function QuotationTemplate({ data }: QuotationTemplateProps) {
     <div className={styles.quotation}>
       {/* 헤더 */}
       <div className={styles.header}>
-        <h1 className={styles.title}>견 적 서</h1>
+        {company.logoImage ? (
+          <div className={styles.headerWithLogo}>
+            <Image
+              src={company.logoImage}
+              alt="회사 로고"
+              width={120}
+              height={40}
+              className={styles.logo}
+            />
+            <h1 className={styles.titleWithLogo}>견 적 서</h1>
+          </div>
+        ) : (
+          <h1 className={styles.title}>견 적 서</h1>
+        )}
       </div>
 
       {/* 상단 정보 영역 */}
@@ -35,6 +48,30 @@ export default function QuotationTemplate({ data }: QuotationTemplateProps) {
             <span className={styles.recipientName}>{recipient.name}</span>
             <span className={styles.recipientSuffix}>귀중</span>
           </div>
+
+          {/* 거래처 상세 정보 */}
+          {(recipient.contactPerson || recipient.phone || recipient.address) && (
+            <div className={styles.recipientDetails}>
+              {recipient.contactPerson && (
+                <div className={styles.metaRow}>
+                  <span className={styles.metaLabel}>담당자:</span>
+                  <span>{recipient.contactPerson}</span>
+                </div>
+              )}
+              {recipient.phone && (
+                <div className={styles.metaRow}>
+                  <span className={styles.metaLabel}>연락처:</span>
+                  <span>{recipient.phone}</span>
+                </div>
+              )}
+              {recipient.address && (
+                <div className={styles.metaRow}>
+                  <span className={styles.metaLabel}>주소:</span>
+                  <span>{recipient.address}</span>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className={styles.metaInfo}>
             <div className={styles.metaRow}>

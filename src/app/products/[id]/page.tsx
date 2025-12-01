@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/client'
+import { getServerSupabase } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import AddToCartButton from '@/components/AddToCartButton'
@@ -18,10 +18,14 @@ const BADGE_COLORS = {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { id } = await params
 
+  // Get tenant-aware Supabase client
+  const { tenant, raw: supabase } = await getServerSupabase()
+
   const { data: product, error } = await supabase
     .from('products')
     .select('*, category:categories(*)')
     .eq('id', id)
+    .eq('tenant_id', tenant.id)
     .single()
 
   if (error || !product) {

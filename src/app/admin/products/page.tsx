@@ -1,19 +1,15 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { requireAdmin, createClient } from '@/lib/supabase/server'
-import { supabase } from '@/lib/supabase/client'
+import { requireAdmin, getServerSupabase } from '@/lib/supabase/server'
 
 export default async function AdminProductsPage() {
-  const { authorized } = await requireAdmin()
+  const { tenant } = await requireAdmin() // unauthorized 시 자동 redirect
 
-  if (!authorized) {
-    redirect('/admin/login')
-  }
-
-  const supabaseClient = await createClient()
-  const { data: products, error } = await supabaseClient
+  const { raw: supabase } = await getServerSupabase()
+  const { data: products, error } = await supabase
     .from('products')
     .select('*, category:categories(*)')
+    .eq('tenant_id', tenant.id)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -23,8 +19,11 @@ export default async function AdminProductsPage() {
   async function deleteProduct(formData: FormData) {
     'use server'
     const id = formData.get('id') as string
-    const supabase = await createClient()
-    await supabase.from('products').delete().eq('id', id)
+    const { tenant: t } = await requireAdmin()
+    const { raw: sb } = await getServerSupabase()
+
+    // 테넌트 검증 후 삭제
+    await sb.from('products').delete().eq('id', id).eq('tenant_id', t.id)
     redirect('/admin/products')
   }
 
@@ -32,12 +31,20 @@ export default async function AdminProductsPage() {
     <div className="max-w-[1400px] mx-auto px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-[#1a1a1a]">제품 관리</h1>
-        <Link
-          href="/admin/products/new"
-          className="bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-colors font-semibold"
-        >
-          + 새 제품 추가
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href="/admin/products/import"
+            className="bg-white text-[#1a1a1a] px-6 py-3 rounded-md border border-[#1a1a1a] hover:bg-gray-50 transition-colors font-semibold"
+          >
+            CSV 일괄 등록
+          </Link>
+          <Link
+            href="/admin/products/new"
+            className="bg-[#1a1a1a] text-white px-6 py-3 rounded-md hover:bg-black transition-colors font-semibold"
+          >
+            + 새 제품 추가
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
@@ -62,7 +69,7 @@ export default async function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#e0e0e0]">
-            {products?.map((product) => (
+            {products?.map((product: { id: string; name: string; price: number; badge: string | null; category: { name: string } | null }) => (
               <tr key={product.id} className="hover:bg-[#fafafa]">
                 <td className="px-6 py-4 text-sm text-[#1a1a1a] font-medium">
                   {product.name}

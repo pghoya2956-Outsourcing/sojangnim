@@ -1,4 +1,4 @@
-import { redirect, notFound } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { requireAdmin, createClient } from '@/lib/supabase/server'
 import EditProductForm from '@/components/admin/EditProductForm'
 
@@ -7,11 +7,7 @@ interface EditProductPageProps {
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
-  const { authorized } = await requireAdmin()
-
-  if (!authorized) {
-    redirect('/admin/login')
-  }
+  await requireAdmin()
 
   const { id } = await params
   const supabase = await createClient()
