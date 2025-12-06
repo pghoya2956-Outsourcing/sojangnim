@@ -22,6 +22,7 @@ export default function InquiryModal({
   const [customerName, setCustomerName] = useState('')
   const [customerContact, setCustomerContact] = useState('')
   const [message, setMessage] = useState('')
+  const [website, setWebsite] = useState('') // Honeypot 필드
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -73,6 +74,7 @@ export default function InquiryModal({
           message: message.trim() || undefined,
           items: inquiryItems,
           total_amount: totalAmount,
+          website: website || undefined, // Honeypot
         }),
       })
 
@@ -96,6 +98,7 @@ export default function InquiryModal({
     setCustomerName('')
     setCustomerContact('')
     setMessage('')
+    setWebsite('')
     setError('')
     onClose()
   }
@@ -207,6 +210,29 @@ export default function InquiryModal({
                 {error}
               </div>
             )}
+
+            {/* Honeypot 필드 - 사람에게는 보이지 않음, 봇만 채움 */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                left: '-9999px',
+                width: '1px',
+                height: '1px',
+                overflow: 'hidden',
+              }}
+            >
+              <label htmlFor="website">Website</label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
 
             <p className="text-xs text-gray-500">
               * 표시된 항목은 필수입니다.

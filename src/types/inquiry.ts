@@ -64,6 +64,8 @@ export interface CreateInquiryRequest {
   message?: string
   items: InquiryItem[]
   total_amount: number
+  // Honeypot 필드 (봇 감지용 - 사람은 이 필드를 채우지 않음)
+  website?: string
 }
 
 /**
