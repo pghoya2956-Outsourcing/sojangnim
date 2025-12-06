@@ -235,6 +235,56 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiries: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          customer_contact: string
+          customer_name: string
+          id: string
+          items: Json
+          message: string | null
+          status: string
+          tenant_id: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          customer_contact: string
+          customer_name: string
+          id?: string
+          items: Json
+          message?: string | null
+          status?: string
+          tenant_id: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          customer_contact?: string
+          customer_name?: string
+          id?: string
+          items?: Json
+          message?: string | null
+          status?: string
+          tenant_id?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

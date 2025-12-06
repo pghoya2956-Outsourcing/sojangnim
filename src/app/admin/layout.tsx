@@ -51,6 +51,12 @@ export default async function AdminLayout({
                   카테고리 관리
                 </Link>
                 <Link
+                  href="/admin/inquiries"
+                  className="text-sm hover:text-gray-300 transition-colors"
+                >
+                  문의 관리
+                </Link>
+                <Link
                   href="/"
                   className="text-sm hover:text-gray-300 transition-colors"
                   target="_blank"
