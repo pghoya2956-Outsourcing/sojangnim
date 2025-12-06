@@ -5,12 +5,16 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import RecipientModal from '@/components/quotation/RecipientModal'
 import QuotationTemplate from '@/components/quotation/QuotationTemplate'
+import InquiryModal from '@/components/inquiry/InquiryModal'
+import InquirySuccessModal from '@/components/inquiry/InquirySuccessModal'
 import { generateQuotationData } from '@/lib/quotation/generator'
 import type { QuotationData, RecipientInfo } from '@/types/quotation'
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false)
+  const [isInquirySuccessOpen, setIsInquirySuccessOpen] = useState(false)
   const [quotationData, setQuotationData] = useState<QuotationData | null>(null)
   const [isPrinting, setIsPrinting] = useState(false)
 
@@ -201,6 +205,12 @@ export default function CartPage() {
               >
                 견적서 출력
               </button>
+              <button
+                onClick={() => setIsInquiryModalOpen(true)}
+                className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                문의하기
+              </button>
               <Link
                 href="/products"
                 className="block w-full text-center bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors"
@@ -218,6 +228,21 @@ export default function CartPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleRecipientSubmit}
+      />
+
+      {/* 문의하기 모달 */}
+      <InquiryModal
+        isOpen={isInquiryModalOpen}
+        onClose={() => setIsInquiryModalOpen(false)}
+        items={items}
+        totalAmount={getTotalPrice}
+        onSuccess={() => setIsInquirySuccessOpen(true)}
+      />
+
+      {/* 문의 완료 모달 */}
+      <InquirySuccessModal
+        isOpen={isInquirySuccessOpen}
+        onClose={() => setIsInquirySuccessOpen(false)}
       />
 
       {/* 인쇄 전용 템플릿 */}
