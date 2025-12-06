@@ -83,23 +83,23 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-8 py-8">
-      <div className="flex gap-8">
-        {/* Sidebar */}
-        <div className="w-[240px] flex-shrink-0">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
+        {/* Sidebar - 모바일에서는 상단에 표시 */}
+        <div className="w-full lg:w-[240px] lg:flex-shrink-0">
           <CategorySidebar currentCategorySlug={categorySlug} />
         </div>
 
         {/* Product Grid */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {/* Search Bar */}
           <ProductSearch />
 
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-[#1a1a1a] mb-2">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1a1a1a] mb-1 sm:mb-2">
               {searchQuery ? `'${searchQuery}' 검색 결과` : categorySlug ? '카테고리별 제품' : '전체 제품'}
             </h1>
-            <p className="text-sm text-[#666]">
+            <p className="text-xs sm:text-sm text-[#666]">
               총 {totalCount || 0}개의 제품
               {totalPages > 1 && ` (${page}/${totalPages} 페이지)`}
             </p>
@@ -107,7 +107,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
           {products && products.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {products.map((product: ProductWithCategory) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -117,7 +117,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <Pagination currentPage={page} totalPages={totalPages} />
             </>
           ) : (
-            <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-12 text-center">
+            <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-8 sm:p-12 text-center">
               <p className="text-[#666]">표시할 제품이 없습니다.</p>
             </div>
           )}
