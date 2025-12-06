@@ -8,6 +8,27 @@ import QuotationTemplate from '@/components/quotation/QuotationTemplate'
 import { generateQuotationData } from '@/lib/quotation/generator'
 import type { QuotationData, RecipientInfo } from '@/types/quotation'
 
+function ProductImage({ src, alt }: { src?: string; alt: string }) {
+  const [error, setError] = useState(false)
+
+  if (!src || error) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#f8f8f8] to-[#f0f0f0] text-[#bbb]">
+        <span className="text-2xl sm:text-3xl">📦</span>
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="w-full h-full object-cover"
+      onError={() => setError(true)}
+    />
+  )
+}
+
 export default function CartPage() {
   const [mounted, setMounted] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -80,130 +101,125 @@ export default function CartPage() {
   return (
     <>
       {/* 화면용 UI */}
-      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${isPrinting ? 'hidden' : ''}`}>
-        <div className="mb-8 flex items-center justify-between print:hidden">
-          <h1 className="text-3xl font-bold text-gray-900">장바구니</h1>
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 ${isPrinting ? 'hidden' : ''}`}>
+        <div className="mb-4 sm:mb-6 lg:mb-8 flex items-center justify-between print:hidden">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">장바구니</h1>
           <button
             onClick={clearCart}
-            className="text-red-600 hover:text-red-700 font-medium text-sm"
+            className="text-red-600 hover:text-red-700 font-medium text-xs sm:text-sm active:scale-[0.97] transition-all"
           >
             전체 삭제
           </button>
         </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-3 sm:space-y-4 order-2 lg:order-1">
           {items.map((item) => (
             <div
               key={item.product.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              className="bg-white rounded-xl shadow-sm border border-[#e8e8e8] p-4 sm:p-5 lg:p-6"
             >
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
                 {/* Product Image */}
-                <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-4xl">
-                  {item.product.image_url ? (
-                    <img
-                      src={item.product.image_url}
-                      alt={item.product.name}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    '📦'
-                  )}
+                <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden">
+                  <ProductImage src={item.product.image_url} alt={item.product.name} />
                 </div>
 
                 {/* Product Info */}
                 <div className="flex-1 min-w-0">
                   <Link
                     href={`/products/${item.product.id}`}
-                    className="text-lg font-bold text-gray-900 hover:text-gray-700 transition-colors"
+                    className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 hover:text-gray-700 transition-colors line-clamp-1"
                   >
                     {item.product.name}
                   </Link>
-                  <p className="text-gray-600 text-sm mt-1">
+                  <p className="text-gray-600 text-xs sm:text-sm mt-0.5 sm:mt-1">
                     {item.product.price.toLocaleString('ko-KR')}원 / 개
                   </p>
                 </div>
 
-                {/* Quantity Control */}
-                <div className="flex items-center gap-2 print:hidden">
-                  <button
-                    onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                    className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-                  >
-                    −
-                  </button>
-                  <span className="w-12 text-center font-medium">{item.quantity}</span>
-                  <button
-                    onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                    className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-                  >
-                    +
-                  </button>
+                {/* Quantity Control - 모바일에서 세로 배치 */}
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 print:hidden">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <button
+                      onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                      className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 active:scale-[0.95] transition-all text-sm sm:text-base"
+                    >
+                      −
+                    </button>
+                    <span className="w-8 sm:w-12 text-center font-medium text-sm sm:text-base">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                      className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 active:scale-[0.95] transition-all text-sm sm:text-base"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Subtotal & Remove */}
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <p className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 whitespace-nowrap">
+                      {(item.product.price * item.quantity).toLocaleString('ko-KR')}원
+                    </p>
+                    <button
+                      onClick={() => removeItem(item.product.id)}
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50 w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center active:scale-[0.95] transition-all"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 </div>
 
                 {/* Print quantity */}
                 <div className="hidden print:block">
                   <span className="font-medium">수량: {item.quantity}</span>
                 </div>
-
-                {/* Subtotal */}
-                <div className="text-right flex-shrink-0">
-                  <p className="text-xl font-bold text-gray-900">
-                    {(item.product.price * item.quantity).toLocaleString('ko-KR')}원
-                  </p>
-                </div>
-
-                {/* Remove Button */}
-                <button
-                  onClick={() => removeItem(item.product.id)}
-                  className="text-red-600 hover:text-red-700 transition-colors print:hidden"
-                >
-                  ✕
-                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Summary */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-24">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">주문 요약</h2>
+        {/* Summary - 모바일에서는 상단에 표시 */}
+        <div className="lg:col-span-1 order-1 lg:order-2">
+          <div className="bg-white rounded-xl shadow-sm border border-[#e8e8e8] p-4 sm:p-5 lg:p-6 lg:sticky lg:top-24">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">주문 요약</h2>
 
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between text-gray-700">
+            <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+              <div className="flex justify-between text-gray-700 text-sm sm:text-base">
                 <span>총 제품 수</span>
                 <span className="font-medium">{items.length}개</span>
               </div>
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between text-gray-700 text-sm sm:text-base">
                 <span>총 수량</span>
                 <span className="font-medium">
                   {items.reduce((sum, item) => sum + item.quantity, 0)}개
                 </span>
               </div>
               <div className="border-t border-gray-200 pt-3">
-                <div className="flex justify-between text-gray-900">
-                  <span className="font-bold">소계</span>
-                  <span className="text-2xl font-bold">
-                    {getTotalPrice.toLocaleString('ko-KR')}원
-                  </span>
+                <div className="flex justify-between items-baseline text-gray-900">
+                  <span className="font-bold text-sm sm:text-base">소계</span>
+                  <div className="text-right">
+                    <span className="text-xl sm:text-2xl font-extrabold tracking-tight">
+                      {getTotalPrice.toLocaleString('ko-KR')}
+                    </span>
+                    <span className="text-base sm:text-lg font-bold">원</span>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500 text-right mt-1">VAT 별도</p>
+                <p className="text-xs sm:text-sm text-gray-500 text-right mt-1">VAT 별도</p>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <button
                 onClick={handlePrintClick}
-                className="w-full bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                className="w-full bg-[#1a1a1a] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base hover:bg-[#333] hover:shadow-md active:scale-[0.98] transition-all"
               >
                 견적서 출력
               </button>
               <Link
                 href="/products"
-                className="block w-full text-center bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                className="block w-full text-center border border-[#e0e0e0] text-gray-700 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base hover:bg-gray-50 hover:border-[#ccc] active:scale-[0.98] transition-all"
               >
                 계속 쇼핑하기
               </Link>
