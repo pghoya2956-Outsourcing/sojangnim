@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// 쿠키 유효 기간 (30일)
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 30
+// 쿠키 유효 기간 (1일)
+const COOKIE_MAX_AGE = 60 * 60 * 24
 
 export async function POST(request: NextRequest) {
   try {
