@@ -42,6 +42,12 @@ export default async function AdminLoginPage() {
       redirect('/admin/login?error=' + encodeURIComponent('관리자 권한이 없는 계정입니다'))
     }
 
+    // 로그인 시간 기록 (세션 만료 체크용)
+    await supabase
+      .from('admin_users')
+      .update({ last_login_at: new Date().toISOString() })
+      .eq('email', email)
+
     redirect('/admin/products')
   }
 

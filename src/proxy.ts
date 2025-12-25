@@ -10,6 +10,9 @@ const PUBLIC_PATHS = [
   '/admin/login',    // 어드민 로그인
 ]
 
+// 관리자 세션 만료 시간 (24시간)
+const ADMIN_SESSION_EXPIRY_MS = 24 * 60 * 60 * 1000
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -68,16 +71,28 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
 
-    // Admin 권한 체크
+    // Admin 권한 및 세션 만료 체크
     const { data: adminData } = await supabase
       .from('admin_users')
-      .select('email')
+      .select('email, last_login_at')
       .eq('email', user.email)
       .single()
 
     if (!adminData) {
       return NextResponse.redirect(
         new URL('/admin/login?error=unauthorized', request.url)
+      )
+    }
+
+    // 세션 만료 체크 (last_login_at이 없거나 24시간 초과)
+    const lastLoginAt = adminData.last_login_at ? new Date(adminData.last_login_at).getTime() : 0
+    const now = Date.now()
+
+    if (now - lastLoginAt > ADMIN_SESSION_EXPIRY_MS) {
+      // 세션 만료 → 로그아웃 처리
+      await supabase.auth.signOut()
+      return NextResponse.redirect(
+        new URL('/admin/login?error=' + encodeURIComponent('세션이 만료되었습니다. 다시 로그인해주세요.'), request.url)
       )
     }
 

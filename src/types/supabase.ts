@@ -39,6 +39,7 @@ export type Database = {
           created_at: string | null
           email: string
           id: string
+          last_login_at: string | null
           role: string | null
           tenant_id: string
           updated_at: string | null
@@ -47,6 +48,7 @@ export type Database = {
           created_at?: string | null
           email: string
           id?: string
+          last_login_at?: string | null
           role?: string | null
           tenant_id: string
           updated_at?: string | null
@@ -55,6 +57,7 @@ export type Database = {
           created_at?: string | null
           email?: string
           id?: string
+          last_login_at?: string | null
           role?: string | null
           tenant_id?: string
           updated_at?: string | null
